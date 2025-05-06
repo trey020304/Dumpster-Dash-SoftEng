@@ -1,0 +1,16 @@
+{
+  "sprites": [
+    {
+      "fileName": "spritesheet.png",
+      "width": 2400,
+      "height": 150,
+      "x": 0,
+      "y": 0
+    }
+  ],
+  "packMode": "grid",
+  "padding": 0,
+  "backgroundColor": "rgba(0, 0, 0, 0)",
+  "spriteSheetWidth": 2400,
+  "spriteSheetHeight": 150
+}
