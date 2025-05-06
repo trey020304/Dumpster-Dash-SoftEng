@@ -10,8 +10,22 @@ class Garbage(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = [x, y]
 
+    @classmethod
+    def load_images(cls, filenames):
+        return [pygame.image.load('assets/' + fn) for fn in filenames]
+
 class BioGarbage(Garbage):
-    pass
+    filenames = ['banana peel.png', 'milk carton.png', 'box.png', 'Leaves.png', 'Poop.png', 
+                'Log.png', 'Book.png', 'Apple.png', 'Meat.png', 'Fishbone.png']
+    
+    @classmethod
+    def get_images(cls):
+        return cls.load_images(cls.filenames)
 
 class NonBioGarbage(Garbage):
-    pass
+    filenames = ['plastic bag.png', 'soda bottle.png', 'water bottle.png', 'Battery.png', 
+                'Lightbulb.png', 'Phone.png', 'Laptop.png', 'Can.png', 'Soda.png', 'Glass.png']
+    
+    @classmethod
+    def get_images(cls):
+        return cls.load_images(cls.filenames)

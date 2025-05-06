@@ -1,4 +1,5 @@
 import pygame
+from garbage import BioGarbage, NonBioGarbage
 
 # Constants
 SCREEN_W = 500
@@ -46,13 +47,8 @@ def load_resources():
         resources['nonbio_animation'].append(pygame.image.load(f'assets/wallyrunnonbio/{i}.png'))
     
     # Load garbage images
-    bio_filenames = ['banana peel.png', 'milk carton.png', 'box.png', 'Leaves.png', 'Poop.png', 
-                    'Log.png', 'Book.png', 'Apple.png', 'Meat.png', 'Fishbone.png']
-    resources['biodegradable_images'] = [pygame.image.load('assets/' + fn) for fn in bio_filenames]
-    
-    nonbio_filenames = ['plastic bag.png', 'soda bottle.png', 'water bottle.png', 'Battery.png', 
-                       'Lightbulb.png', 'Phone.png', 'Laptop.png', 'Can.png', 'Soda.png', 'Glass.png']
-    resources['nonbiodegradable_images'] = [pygame.image.load('assets/' + fn) for fn in nonbio_filenames]
+    resources['biodegradable_images'] = BioGarbage.get_images()
+    resources['nonbiodegradable_images'] = NonBioGarbage.get_images()
     
     # Load sounds
     pygame.mixer.init()

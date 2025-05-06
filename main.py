@@ -4,6 +4,7 @@ import sys
 from states import MainMenu, Game, GameOver
 from resources import load_resources, SCREEN_W, SCREEN_H, FPS
 
+
 # Initialize pygame
 pygame.init()
 
