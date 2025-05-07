@@ -1,11 +1,14 @@
+# runner.py
 import pygame
+from garbage import BioGarbage, NonBioGarbage
 
 class Runner(pygame.sprite.Sprite):
-    def __init__(self, x, y, run_animation_list, death_animation):
+    def __init__(self, x, y, run_animation_list, death_animation, game_instance):
         super().__init__()
         pygame.sprite.Sprite.__init__(self)
         self.alive = True
         self.dead = False
+        self.game = game_instance  # Reference to the Game instance
         self.run_animation = run_animation_list
         self.death_animation = death_animation
         self.current_animation = self.run_animation
@@ -14,25 +17,34 @@ class Runner(pygame.sprite.Sprite):
         self.image = self.current_animation[self.frame_index]
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
+        self.invincible = False
+        self.invincible_timer = 0
+        self.just_died = False
 
     def update(self, garbage_group):
         animation_cooldown = 30
         now = pygame.time.get_ticks()
         
-        #Check collision and switch to death animation
-        if not self.dead and pygame.sprite.spritecollide(self, garbage_group, False):
-            bad_collision = (
-                isinstance(self, Bio) and any(isinstance(g, NonBio) for g in pygame.sprite.spritecollide(self, garbage_group, False))
-            ) or (
-                isinstance(self, NonBio) and any(isinstance(g, Bio) for g in pygame.sprite.spritecollide(self, garbage_group, False))
-            )
-            if bad_collision:
-                self.dead = True
-                self.current_animation = self.death_animation
-                self.frame_index = 0
-                self.update_time = now
+        if self.just_died:
+            self.just_died = False
+            
+        if self.invincible:
+            self.invincible_timer -= 1
+            if self.invincible_timer <= 0:
+                self.invincible = False
         
-        #Animate
+        if not self.dead and not self.invincible and not self.game.dead:
+            collisions = pygame.sprite.spritecollide(self, garbage_group, False)
+            for garbage in collisions:
+                wrong_collision = (
+                    (isinstance(self, Bio) and isinstance(garbage, NonBioGarbage)) or (
+                    isinstance(self, NonBio) and isinstance(garbage, BioGarbage)))
+                
+                if wrong_collision:
+                    self.take_damage()
+                    garbage.kill()
+                    break
+
         if now - self.update_time > animation_cooldown:
             self.update_time = now
             self.frame_index += 1
@@ -44,17 +56,29 @@ class Runner(pygame.sprite.Sprite):
 
         self.image = self.current_animation[self.frame_index]
 
+    def take_damage(self):
+        self.game.health -= 1  # Modify the shared health
+        self.invincible = True
+        self.invincible_timer = 30
+        if self.game.health <= 0:
+            self.dead = True
+            self.game.dead = True
+            self.just_died = True
+            self.current_animation = self.death_animation
+            self.frame_index = 0
+            self.update_time = pygame.time.get_ticks()
+
     def draw(self, screen):
         screen.blit(self.image, self.rect)
 
 class Bio(Runner):
-    def __init__(self, x, y, resources):
+    def __init__(self, x, y, resources, game_instance):
         run_animation = resources['bio_animation']
         death_animation = resources['death_animation']
-        super().__init__(x, y, run_animation, death_animation)
+        super().__init__(x, y, run_animation, death_animation, game_instance)
 
 class NonBio(Runner):
-    def __init__(self, x, y, resources):
+    def __init__(self, x, y, resources, game_instance):
         run_animation = resources['nonbio_animation']
         death_animation = resources['death_animation']
-        super().__init__(x, y, run_animation, death_animation)
+        super().__init__(x, y, run_animation, death_animation, game_instance)
