@@ -55,17 +55,17 @@ class Game:
         """Reset all game state variables for a new game"""
         self.score = 0
         self.last_score = 0
+        self.health = 3  # Moved health here to be shared
         self.font = pygame.font.Font(pygame.font.get_default_font(), 25)
         self.increment_timer = 0
-        self.speed = self.resources['game_speed']  # Use the initial game speed
-        self.resources['scroll_pos'] = 0  # Reset scroll position
-        # Reset background positions
+        self.speed = self.resources['game_speed']
+        self.resources['scroll_pos'] = 0
         self.resources['b_pos'] = 0
         self.resources['o_pos'] = 720
-        self.active_wally = Bio(250, 575, self.resources)
+        self.active_wally = Bio(250, 575, self.resources, self)
         self.prev_wally_position = self.active_wally.rect.center
         self.wally1 = self.active_wally
-        self.wally2 = NonBio(250, 575, self.resources)
+        self.wally2 = NonBio(250, 575, self.resources, self)
         self.garbage_group = pygame.sprite.Group()
         self.dead = False
         self.death_timer = None
@@ -93,13 +93,25 @@ class Game:
             elif event.key == pygame.K_ESCAPE:
                 switch_state("MainMenu")
 
+    # states.py (Game class update method)
     def update(self, switch_state):
+        # Check if runner just died
+        if self.active_wally.just_died:
+            self.dead = True
+            self.death_timer = pygame.time.get_ticks()
+            self.last_score = self.score
+            if self.score > self.highest_score:
+                self.highest_score = self.score
+            self.resources['game_over_sound'].play()
+        
+        # If dead, wait for death animation to finish
         if self.dead:
             self.active_wally.update(self.garbage_group)
             if pygame.time.get_ticks() - self.death_timer >= self.death_delay:
                 switch_state("GameOver")
             return
         
+        # Normal game update
         self.active_wally.update(self.garbage_group)
 
         # Add new garbage if needed
@@ -111,12 +123,22 @@ class Game:
             if add_garbage:
                 self.create_garbage()
 
-        # Move garbage
-        for garbage in self.garbage_group:
-            garbage.rect.y += self.speed  # This matches the background speed
+        # Move garbage and remove if off-screen
+        for garbage in list(self.garbage_group):
+            garbage.rect.y += self.speed
             if garbage.rect.top >= self.resources['height']:
                 garbage.kill()
 
+        # Check for correct matches (only for scoring)
+        for garbage in list(self.garbage_group):
+            if self.active_wally.rect.colliderect(garbage.rect):
+                if ((isinstance(self.active_wally, Bio) and isinstance(garbage, BioGarbage)) or 
+                    (isinstance(self.active_wally, NonBio) and isinstance(garbage, NonBioGarbage))):
+                    self.score += 1
+                    self.increment_timer += 1
+                    self.resources['get_item_sound'].play()
+                    garbage.kill()
+                    break
         # Check collisions
         collisions = pygame.sprite.spritecollide(self.active_wally, self.garbage_group, True)
 
@@ -162,19 +184,22 @@ class Game:
         garbage.rect.center = (lane, -self.resources['height'] / 2)
         self.garbage_group.add(garbage)
 
+    # states.py (Game class draw method)
     def draw(self, screen):
-        if self.dead:
-            self.active_wally.draw(screen)
-        else:
-            self.active_wally.draw(screen)
-            
+        self.active_wally.draw(screen)
         font = self.font
-        
-        # Score display with outline
+            
+        # Score display
         score_text = font.render(f'Score: {self.score}', True, (0, 0, 0))
         screen.blit(score_text, (200, 63))
         score_text = font.render(f'Score: {self.score}', True, (255, 255, 255))
         screen.blit(score_text, (200, 60))
+        
+        # Health display using shared health
+        health_text = font.render(f'Health: {self.health}', True, (0, 0, 0))
+        screen.blit(health_text, (30, 63))
+        health_text = font.render(f'Health: {self.health}', True, (255, 255, 255))
+        screen.blit(health_text, (30, 60))
         
         self.garbage_group.draw(screen)
 
