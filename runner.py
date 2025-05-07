@@ -1,6 +1,6 @@
 # runner.py
 import pygame
-from garbage import BioGarbage, NonBioGarbage
+from garbage import BioGarbage, NonBioGarbage, Obstacle
 
 class Runner(pygame.sprite.Sprite):
     def __init__(self, x, y, run_animation_list, death_animation, game_instance):
@@ -36,11 +36,20 @@ class Runner(pygame.sprite.Sprite):
         if not self.dead and not self.invincible and not self.game.dead:
             collisions = pygame.sprite.spritecollide(self, garbage_group, False)
             for garbage in collisions:
+                # Handle obstacle collision (new code)
+                if isinstance(garbage, Obstacle):
+                    self.game.resources['wrong_bin_sound'].play()
+                    self.take_damage()
+                    garbage.kill()
+                    break
+                    
+                # Existing garbage collision handling
                 wrong_collision = (
-                    (isinstance(self, Bio) and isinstance(garbage, NonBioGarbage)) or (
-                    isinstance(self, NonBio) and isinstance(garbage, BioGarbage)))
+                    (isinstance(self, Bio) and isinstance(garbage, NonBioGarbage)) or 
+                    (isinstance(self, NonBio) and isinstance(garbage, BioGarbage)))
                 
                 if wrong_collision:
+                    self.game.resources['wrong_bin_sound'].play()
                     self.take_damage()
                     garbage.kill()
                     break

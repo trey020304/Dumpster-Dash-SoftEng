@@ -60,12 +60,16 @@ def load_resources():
     nonbio_filenames = ['plastic bag.png', 'soda bottle.png', 'water bottle.png', 'Battery.png', 
                        'Lightbulb.png', 'Phone.png', 'Laptop.png', 'Can.png', 'Soda.png', 'Glass.png']
     resources['nonbiodegradable_images'] = [pygame.image.load('assets/obstacles/' + fn) for fn in nonbio_filenames]
+
+    obstacle_filenames = ['puddle.png', 'road barricade.png', 'traffic cone.png']
+    resources['obstacle_images'] = [pygame.image.load('assets/obstacles/' + fn) for fn in obstacle_filenames]
     
     # Load sounds
     pygame.mixer.init()
-    resources['game_music'] = "assets/music/game_music.wav"
-    resources['get_item_sound'] = pygame.mixer.Sound("assets/music/get_item.mp3")
-    resources['game_over_sound'] = pygame.mixer.Sound("assets/music/game_over.mp3")
+    resources['game_music'] = "assets/audio/game_music.wav"
+    resources['get_item_sound'] = pygame.mixer.Sound("assets/audio/get_item.mp3")
+    resources['game_over_sound'] = pygame.mixer.Sound("assets/audio/game_over.mp3")
+    resources['wrong_bin_sound'] = pygame.mixer.Sound("assets/audio/wrong_bin.mp3")
     
     # Play music
     pygame.mixer.music.load(resources['game_music'])
