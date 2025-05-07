@@ -12,7 +12,7 @@ class Garbage(pygame.sprite.Sprite):
 
     @classmethod
     def load_images(cls, filenames):
-        return [pygame.image.load('assets/' + fn) for fn in filenames]
+        return [pygame.image.load('assets/obstacles/' + fn) for fn in filenames]
 
 class BioGarbage(Garbage):
     filenames = ['banana peel.png', 'milk carton.png', 'box.png', 'Leaves.png', 'Poop.png', 

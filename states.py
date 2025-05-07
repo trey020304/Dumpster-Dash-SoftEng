@@ -102,6 +102,7 @@ class Game:
             self.last_score = self.score
             if self.score > self.highest_score:
                 self.highest_score = self.score
+                current_player_HS.updateCurrentPlayerHighScore(uid ,self.score)
             self.resources['game_over_sound'].play()
         
         # If dead, wait for death animation to finish
@@ -139,34 +140,6 @@ class Game:
                     self.resources['get_item_sound'].play()
                     garbage.kill()
                     break
-        # Check collisions
-        collisions = pygame.sprite.spritecollide(self.active_wally, self.garbage_group, True)
-
-        correct_match = False
-
-        for garbage in collisions:
-            # Wrong match: Bio hits NonBioGarbage or NonBio hits BioGarbage
-            if ((isinstance(self.active_wally, Bio) and isinstance(garbage, NonBioGarbage)) or 
-                (isinstance(self.active_wally, NonBio) and isinstance(garbage, BioGarbage))):
-                self.last_score = self.score
-                if self.score > self.highest_score:
-                    self.highest_score = self.score
-                    current_player_HS.updateCurrentPlayerHighScore(uid, self.score)
-                self.resources['game_over_sound'].play()
-                self.death_timer = pygame.time.get_ticks()
-                self.dead = True
-                self.active_wally.dead = True
-                self.active_wally.current_animation = self.active_wally.death_animation
-                break
-            
-            # Good match
-            correct_match = True
-
-        # Score only if a correct match happened 
-        if correct_match:
-            self.resources['get_item_sound'].play()
-            self.score += 1
-            self.increment_timer += 1
 
         # Increase speed periodically
         if self.increment_timer >= 5:
