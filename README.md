@@ -36,14 +36,6 @@ For our food and means of subsistence, human existence depends just as much on t
 
 ---
 
-## 😎 Future Plans for the Game 😎
-
-- Multiple skins of Wally Waste (that can be bought with microtransactions or in-game currency that can be collected from playing)
-- Multiple game modes!
-- Multi-platform! Mobile, consoles, etc.!
-
----
-
 <p align="center"> Screenshots and Some Visual Concepts </p>
 
 <p align="center">

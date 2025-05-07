@@ -28,7 +28,7 @@ db = firestore.client()
 firebase = pyrebase.initialize_app(firebaseConfig)
 auth = firebase.auth()
 
-class LoginRegister:
+class Authorization:
     def register(self):
         email = input("Enter email: ")
         password = input("Enter password: ")
@@ -82,10 +82,27 @@ class LoginRegister:
                 print("An unknown error occurred during login.")
 
 
-class HighScores:
+class HighScoreDB:
+    @staticmethod
+    def updateCurrentPlayerHighScore(uid, score):
+        db.collection('users').document(uid).set({
+            'highscore': score,
+        }, merge=True)
+
+    @staticmethod
+    def getCurrentPlayerHighScore(uid):
+        try:
+            doc = db.collection('users').document(uid).get()
+            if doc.exists:
+                data = doc.to_dict()
+                return data.get('highscore', 0)
+            else:
+                print("User document not found.")
+                return None
+        except Exception as e:
+            print(f"Failed to get highscore: {e}")
+            return None
+
+class LeaderBoardDB:
     pass
 
-
-if __name__ == "__main__":
-    loginregister = LoginRegister()
-    loginregister.register()

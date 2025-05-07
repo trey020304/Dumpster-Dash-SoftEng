@@ -3,6 +3,10 @@ import random
 import sys
 from runner import Bio, NonBio
 from garbage import BioGarbage, NonBioGarbage
+from firebase import HighScoresDB
+
+current_player_HS = HighScoresDB
+uid = 'lyBQ8JNZn3UXdAXQYto6GhczkbJ2'
 
 class Logo:
     def __init__(self, x, y, image):
@@ -41,7 +45,7 @@ class MainMenu:
 class Game:
     def __init__(self, resources):
         self.resources = resources
-        self.highest_score = 0  # Persistent across games
+        self.highest_score = current_player_HS.getCurrentPlayerHighScore(uid)
         self.reset_game()
 
     def reset_game(self):
@@ -100,6 +104,7 @@ class Game:
                 self.last_score = self.score
                 if self.score > self.highest_score:
                     self.highest_score = self.score
+                    current_player_HS.updateCurrentPlayerHighScore(uid, self.score)
                 self.resources['game_over_sound'].play()
                 pygame.time.wait(1500)
                 switch_state("GameOver")
