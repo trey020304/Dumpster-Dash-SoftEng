@@ -19,22 +19,39 @@ def load_spritesheet(path, frame_width, frame_height, num_frames):
 def load_resources():
     resources = {}
     
-    # Load images
-    resources['menu_logo_img'] = pygame.image.load('assets/icons/menu_logo.png').convert_alpha()
-    resources['game_over_img'] = pygame.image.load('assets/icons/game_over.png').convert_alpha()
-    resources['play_button_img'] = pygame.image.load('assets/icons/play.png').convert_alpha()
-    resources['quit_button_img'] = pygame.image.load('assets/icons/quit.png').convert_alpha()
-    resources['restart_button_img'] = pygame.image.load('assets/icons/restart.png').convert_alpha()
-    resources['menu_button_img'] = pygame.image.load('assets/icons/main_menu.png').convert_alpha()
+    # Load images and resize them
+    def load_and_scale(image_path, scale_factor=None, new_size=None):
+        img = pygame.image.load(image_path).convert_alpha()
+        if scale_factor:
+            new_width = int(img.get_width() * scale_factor)
+            new_height = int(img.get_height() * scale_factor)
+            img = pygame.transform.scale(img, (new_width, new_height))
+        elif new_size:  # Alternatively, specify exact dimensions
+            img = pygame.transform.scale(img, new_size)
+        return img
+    
+    # Example usage with scaling:
+    resources['menu_logo_img'] = load_and_scale('assets/icons/menu_logo.png', scale_factor=1)
+    resources['game_over_img'] = load_and_scale('assets/icons/game_over.png', scale_factor=1)
+    resources['play_button_img'] = load_and_scale('assets/icons/play.png', scale_factor=.85)
+    resources['leaderboard_button_img'] = load_and_scale('assets/icons/Leaderboard.png', scale_factor=.6)
+    resources['leaderboard_img'] = load_and_scale('assets/leaderboard panel.png', scale_factor=.4)
+    resources['back_button_img'] = load_and_scale('assets/icons/X.png', scale_factor=0.25)
+    resources['logout_button_img'] = load_and_scale('assets/icons/Log out.png', scale_factor=0.4)
+    resources['quit_button_img'] = load_and_scale('assets/icons/quit.png', scale_factor=0.4)
+    resources['restart_button_img'] = load_and_scale('assets/icons/restart.png', scale_factor=1)
+    resources['menu_button_img'] = load_and_scale('assets/icons/main_menu.png', scale_factor=1)
     
     # Load background
     resources['bg_image'] = pygame.image.load('assets/bg.png').convert()
+    # You can resize the background if needed
+    # resources['bg_image'] = pygame.transform.scale(resources['bg_image'], (SCREEN_W, SCREEN_H))
     resources['bg_height'] = resources['bg_image'].get_height()
-    resources['scroll_pos'] = 0  # Single scroll position for both images
+    resources['scroll_pos'] = 0
     resources['menu_speed'] = 3
     resources['game_speed'] = 7
     
-    # Lanes
+    # Lanes (unchanged)
     resources['left_lane'] = 150
     resources['center_lane'] = 166
     resources['right_lane'] = 275
@@ -45,27 +62,41 @@ def load_resources():
     resources['objectright_lane'] = 360
     resources['objectlanes'] = [resources['objectleft_lane'], resources['objectcenter_lane'], resources['objectright_lane']]
     
-    # Height
     resources['height'] = HEIGHT
     
-    # Load animations
-    resources['bio_animation'] = load_spritesheet('assets/animations/wallyrunbio_spritesheet.png', 150, 150, 16)
-    resources['nonbio_animation'] = load_spritesheet('assets/animations/wallyrunnonbio_spritesheet.png', 150, 150, 16)
-    resources['death_animation'] = load_spritesheet('assets/animations/wally_death.png', 150, 150, 16)
-
-    # Load garbage images
-    resources['biodegradable_images'] = BioGarbage.get_images()
-    resources['nonbiodegradable_images'] = NonBioGarbage.get_images()
-    resources['obstacle_images'] = Obstacle.get_images()
+    # Load animations - you can resize frames here
+    def load_scaled_spritesheet(path, frame_width, frame_height, num_frames, scale_factor=None, new_size=None):
+        frames = load_spritesheet(path, frame_width, frame_height, num_frames)
+        if scale_factor or new_size:
+            scaled_frames = []
+            for frame in frames:
+                if scale_factor:
+                    new_width = int(frame.get_width() * scale_factor)
+                    new_height = int(frame.get_height() * scale_factor)
+                    scaled_frame = pygame.transform.scale(frame, (new_width, new_height))
+                elif new_size:
+                    scaled_frame = pygame.transform.scale(frame, new_size)
+                scaled_frames.append(scaled_frame)
+            return scaled_frames
+        return frames
     
-    # Load sounds
+    # Example with scaled animations:
+    resources['bio_animation'] = load_scaled_spritesheet('assets/animations/wallyrunbio_spritesheet.png', 150, 150, 16, scale_factor=1)
+    resources['nonbio_animation'] = load_scaled_spritesheet('assets/animations/wallyrunnonbio_spritesheet.png', 150, 150, 16, scale_factor=1)
+    resources['death_animation'] = load_scaled_spritesheet('assets/animations/wally_death.png', 150, 150, 16, scale_factor=1)
+
+    # Load garbage images - you'll need to modify the get_images() methods to accept size parameters
+    resources['biodegradable_images'] = BioGarbage.get_images()  # Modify this class to handle scaling
+    resources['nonbiodegradable_images'] = NonBioGarbage.get_images()  # Modify this class to handle scaling
+    resources['obstacle_images'] = Obstacle.get_images()  # Modify this class to handle scaling
+    
+    # Sounds (unchanged)
     pygame.mixer.init()
     resources['game_music'] = "assets/audio/game_music.wav"
     resources['get_item_sound'] = pygame.mixer.Sound("assets/audio/get_item.mp3")
     resources['game_over_sound'] = pygame.mixer.Sound("assets/audio/game_over.mp3")
     resources['wrong_bin_sound'] = pygame.mixer.Sound("assets/audio/wrong_bin.mp3")
     
-    # Play music
     pygame.mixer.music.load(resources['game_music'])
     pygame.mixer.music.play(-1)
     pygame.mixer.music.set_volume(0.2)

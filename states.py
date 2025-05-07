@@ -24,18 +24,31 @@ class MainMenu:
         # Reset background position when menu loads
         resources['b_pos'] = 0
         resources['o_pos'] = 720
-        self.play_button = resources['play_button_img'].get_rect(center=(250, 500))
-        self.exit_button = resources['quit_button_img'].get_rect(center=(250, 600))
+        self.play_button = resources['play_button_img'].get_rect(center=(250, 466))
+        self.exit_button = resources['quit_button_img'].get_rect(center=(416, 625))
+        self.logout_button = resources['logout_button_img'].get_rect(center=(84, 625))
+        self.leaderboard_button = resources['leaderboard_button_img'].get_rect(center=(250, 625))
         self.menu_logo = Logo(250, 200, resources['menu_logo_img'])
+        
 
     def handle_events(self, event, switch_state):
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if self.play_button.collidepoint(event.pos):
-                self.game.reset_game()  # Reset game state before starting
+            mouse_pos = event.pos
+            print(f"Mouse click at: {mouse_pos}")  # Debug print
+            
+            if self.play_button.collidepoint(mouse_pos):
+                print("Play button clicked")
+                self.game.reset_game()
                 switch_state("Game")
-            elif self.exit_button.collidepoint(event.pos):
+            elif self.leaderboard_button.collidepoint(mouse_pos):
+                print("Leaderboard button clicked")
+                switch_state("Leaderboard")
+            elif self.exit_button.collidepoint(mouse_pos):
+                print("Exit button clicked")
                 pygame.quit()
                 sys.exit()
+            else:
+                print("Clicked somewhere else")
 
     def update(self):
         pass
@@ -44,6 +57,69 @@ class MainMenu:
         self.menu_logo.draw(screen)
         screen.blit(self.resources['play_button_img'], self.play_button)
         screen.blit(self.resources['quit_button_img'], self.exit_button)
+        screen.blit(self.resources['logout_button_img'], self.logout_button)
+        screen.blit(self.resources['leaderboard_button_img'], self.leaderboard_button)
+
+class Leaderboard:
+    def __init__(self, resources, game_instance):
+        self.resources = resources
+        self.game = game_instance
+        self.back_button = resources['back_button_img'].get_rect(center=(440, 60))
+        self.font_large = pygame.font.Font(pygame.font.get_default_font(), 36)
+        self.font_medium = pygame.font.Font(pygame.font.get_default_font(), 20)
+        self.font_small = pygame.font.Font(pygame.font.get_default_font(), 16)
+        
+        # Sample leaderboard data - replace with actual data from your database
+        self.leaderboard_data = [
+            {"name": "Player1", "score": 1500},
+            {"name": "Player2", "score": 1200},
+            {"name": "Player3", "score": 1000},
+            {"name": "Player4", "score": 800},
+            {"name": "You", "score": self.game.highest_score}
+        ]
+        # Sort by score descending
+        self.leaderboard_data.sort(key=lambda x: x['score'], reverse=True)
+
+    def handle_events(self, event, switch_state):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if self.back_button.collidepoint(event.pos):
+                switch_state("MainMenu")
+
+    def update(self):
+        pass
+
+    def draw(self, screen):
+        # Draw leaderboard background
+        screen.blit(self.resources['leaderboard_img'], (47, -37))
+        
+        # Draw column headers
+        rank_header = self.font_small.render("RANK", True, (255, 255, 255))
+        name_header = self.font_small.render("NAME", True, (255, 255, 255))
+        score_header = self.font_small.render("SCORE", True, (255, 255, 255))
+        
+        screen.blit(rank_header, (92.5, 142.5))
+        screen.blit(name_header, (167.5, 142.5))
+        screen.blit(score_header, (340, 142.5))
+        
+        # Draw leaderboard entries
+        for i in range(10):  # Always show 10 ranks
+            entry = self.leaderboard_data[i] if i < len(self.leaderboard_data) else {"name": "-", "score": 0}
+            y_pos = 172 + i * 48.5
+            
+            # Rank
+            rank = self.font_small.render(f"{i+1}.", True, (255, 255, 255))
+            screen.blit(rank, (95, y_pos))
+            
+            # Name
+            name = self.font_small.render(entry['name'], True, (255, 255, 255))
+            screen.blit(name, (167.5, y_pos))
+            
+            # Score
+            score = self.font_small.render(str(entry['score']), True, (255, 255, 255))
+            screen.blit(score, (340, y_pos))
+        
+        # Draw back button
+        screen.blit(self.resources['back_button_img'], self.back_button)
 
 class Game:
     def __init__(self, resources):
