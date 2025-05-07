@@ -69,19 +69,16 @@ class LoginRegister:
             return uid
         except Exception as e:
             try:
-                error_json = json.loads(e.args[1])  # e.args[1] contains the JSON error
+                error_json = json.loads(e.args[1])  # Parse error JSON
                 error_message = error_json['error']['message']
 
-                if error_message == "EMAIL_NOT_FOUND":
-                    print("Error: Email not found.")
-                elif error_message == "INVALID_PASSWORD":
-                    print("Error: Incorrect password.")
+                if error_message in ["EMAIL_NOT_FOUND", "INVALID_PASSWORD"]:
+                    print("Login Failed: Invalid Credentials!")
                 elif error_message == "USER_DISABLED":
                     print("Error: This user account has been disabled.")
                 else:
                     print(f"Login failed: {error_message}")
             except:
-                # Fallback if parsing fails
                 print("An unknown error occurred during login.")
 
 
