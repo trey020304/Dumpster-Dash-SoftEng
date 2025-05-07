@@ -123,8 +123,9 @@ class HighScoreDB:
     def updateCurrentPlayerHighScore(uid, score):
         db.collection('users').document(uid).set({
             'highscore': score,
+            'highscore_timestamp': firestore.SERVER_TIMESTAMP
         }, merge=True)
-
+        
     @staticmethod
     def getCurrentPlayerHighScore(uid):
         try:
@@ -141,7 +142,23 @@ class HighScoreDB:
 
 # ------------------ Leaderboard ------------------ #
 class LeaderBoardDB:
-    pass
+    def get_leaderboard_from_DB():
+        try:
+            users_ref = db.collection('users')
+            top_users = users_ref.order_by('highscore', direction=firestore.Query.DESCENDING).limit(10).stream()
+
+            leaderboard = []
+            for user in top_users:
+                data = user.to_dict()
+                leaderboard.append({
+                    'username': data.get('username', 'Unknown'),
+                    'highscore': data.get('highscore', 0),
+                })
+
+            return leaderboard
+        except Exception as e:
+            print(f"Error fetching leaderboard: {e}")
+            return []
 
 # ------------------ Entry Point ------------------ #
 if __name__ == "__main__":

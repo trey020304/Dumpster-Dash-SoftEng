@@ -3,9 +3,10 @@ import random
 import sys
 from runner import Bio, NonBio
 from garbage import BioGarbage, NonBioGarbage, Obstacle
-from firebase import HighScoreDB
+from firebase import HighScoreDB, LeaderBoardDB
 
 current_player_HS = HighScoreDB
+leaderboard_db = LeaderBoardDB
 uid = 'lyBQ8JNZn3UXdAXQYto6GhczkbJ2'
 
 class Logo:
@@ -68,17 +69,16 @@ class Leaderboard:
         self.font_large = pygame.font.Font(pygame.font.get_default_font(), 36)
         self.font_medium = pygame.font.Font(pygame.font.get_default_font(), 20)
         self.font_small = pygame.font.Font(pygame.font.get_default_font(), 16)
+        self.leaderboard_data = self.fetch_leaderboard_data()
         
-        # Sample leaderboard data - replace with actual data from your database
-        self.leaderboard_data = [
-            {"name": "Player1", "score": 1500},
-            {"name": "Player2", "score": 1200},
-            {"name": "Player3", "score": 1000},
-            {"name": "Player4", "score": 800},
-            {"name": "You", "score": self.game.highest_score}
-        ]
-        # Sort by score descending
-        self.leaderboard_data.sort(key=lambda x: x['score'], reverse=True)
+    def fetch_leaderboard_data(self):
+        firebase_data = LeaderBoardDB.get_leaderboard_from_DB()
+        
+        firebase_data.sort(key=lambda x: x["highscore"], reverse=True)
+        trimmed = firebase_data[:10]
+
+        return [{"name": entry.get("username", "-"), "score": entry.get("highscore", 0)} for entry in trimmed]
+
 
     def handle_events(self, event, switch_state):
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -103,7 +103,7 @@ class Leaderboard:
         
         # Draw leaderboard entries
         for i in range(10):  # Always show 10 ranks
-            entry = self.leaderboard_data[i] if i < len(self.leaderboard_data) else {"name": "-", "score": 0}
+            entry = self.leaderboard_data[i] if i < len(self.leaderboard_data) else {"name": "-", "score": '-'}
             y_pos = 172 + i * 48.5
             
             # Rank
