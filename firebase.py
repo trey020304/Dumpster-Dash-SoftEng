@@ -30,13 +30,14 @@ auth = firebase.auth()
 SESSION_FILE = "session.json"
 
 # ------------------ Session Management ------------------ #
+
 def save_session(user):
-    with open(SESSION_FILE, "w") as f:
-        json.dump({
-            "idToken": user['idToken'],
-            "refreshToken": user['refreshToken'],
-            "localId": user['localId']
-        }, f)
+        with open(SESSION_FILE, "w") as f:
+            json.dump({
+                "idToken": user['idToken'],
+                "refreshToken": user['refreshToken'],
+                "localId": user['localId']
+            }, f)
 
 def load_session():
     if os.path.exists(SESSION_FILE):
@@ -46,24 +47,26 @@ def load_session():
             user = auth.refresh(session['refreshToken'])  # Refresh token
             session['idToken'] = user['idToken']  # Update session with new idToken
             save_session(session)
-            print("Auto-login successful.")
+            print("Auto-login successful. Logged in: " + session['localId'])
             return session['localId']
         except:
             print("Session expired or invalid.")
     return None
-
+    
 
 # ------------------ Authorization ------------------ #
 class Authorization:
+
+    
     def register(email, password, confirm_password, username):
         # Email format validation
         if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
             print("Invalid email format.")
-            return
+            return ''
 
         if password != confirm_password:
             print("Passwords do not match.")
-            return
+            return ''
 
         try:
             user = auth.create_user_with_email_and_password(email, password)
@@ -82,11 +85,11 @@ class Authorization:
                 return 'registration_failed'
 
 
-    def login(email, password):
+    def login(self, email, password):
         try:
             user = auth.sign_in_with_email_and_password(email, password)
             uid = user['localId']
-            save_session(user)
+            self.save_session(user)
             return uid
         except Exception as e:
             try:

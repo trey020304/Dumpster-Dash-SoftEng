@@ -3,6 +3,7 @@ from pygame.locals import *
 import sys
 from states import MainMenu, Game, GameOver, Leaderboard, Login
 from resources import load_resources, SCREEN_W, SCREEN_H, FPS
+import firebase
 
 # Initialize pygame
 pygame.init()
@@ -22,6 +23,7 @@ main_menu = MainMenu(resources, game)
 game_over = GameOver(resources, game)
 leaderboard = Leaderboard(resources, game)
 
+
 # Dictionary to manage all states
 states = {
     "Login": login, 
@@ -32,7 +34,11 @@ states = {
 }
 
 # Set starting game state
-current_state = "Login"
+uid = firebase.load_session()
+if not uid:
+    current_state = "Login"
+else:
+    current_state = "MainMenu"
 
 def switch_state(state, reset_login=False):
     global current_state

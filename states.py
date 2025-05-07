@@ -3,11 +3,13 @@ import random
 import sys
 from runner import Bio, NonBio
 from garbage import BioGarbage, NonBioGarbage, Obstacle
-from firebase import HighScoreDB, LeaderBoardDB
+from firebase import HighScoreDB, LeaderBoardDB, Authorization
+import firebase
 
 current_player_HS = HighScoreDB
 leaderboard_db = LeaderBoardDB
-uid = 'lyBQ8JNZn3UXdAXQYto6GhczkbJ2'
+auth = Authorization
+uid = firebase.load_session()
 
 class Logo:
     def __init__(self, x, y, image):
@@ -23,6 +25,8 @@ class Login:
         self.resources = resources  # Store resources as instance variable
         self.game = game_instance
         self.menu_logo = Logo(250, 250, resources['menu_logo_img'])
+        self.activate_submit_button = ''
+        self.reset_password_status = ''
         
         # Initialize all state variables
         self.show_login_form = False
@@ -89,17 +93,37 @@ class Login:
                     self.show_login_form = False
                     self.show_create_account = False
                     self.show_forgot_password = False
+                    self.reset_state()
                 elif self.submit_button.collidepoint(mouse_pos):
                     if self.show_login_form:
-                        print("Login submitted")
-                        switch_state("MainMenu")
+                        global uid
+                        uid = auth.login(self.email_text, self.password_text)
+                        if (uid == 'invalid_credentials' or uid == 'unknown_error'):
+                            print("Invalid credentials!")
+                        else:
+                            switch_state("MainMenu")
+
                     elif self.show_create_account:
-                        print("Create Account submitted")
-                        switch_state("MainMenu")
+                        self.activate_submit_button = auth.register(self.email_text, self.password_text, self.confirm_password_text, self.username_text)
+                        if (self.activate_submit_button == ''):
+                            print('Either invalid e-mail or not matching passwords')
+                        elif (self.activate_submit_button == 'success'):
+                            switch_state("Login")
+                            print('You have successfully registered. Please log in.')
+                        elif (self.activate_submit_button == 'already_registered'):
+                            print('Email already associated with an account. Try again.')
+                        else:
+                            print('Registration failed for unknown reasons.')
+
                     elif self.show_forgot_password:
-                        print("Password reset requested for:", self.email_text)
-                        self.show_forgot_password = False
-                        self.show_login_form = True
+                        self.reset_password_status = auth.reset_password(self.email_text)
+                        if (self.reset_password_status == 'reset_email_sent'):
+                            print('Reset email sent.')
+                            self.show_forgot_password = False
+                            self.show_login_form = True
+                            switch_state("Login")
+                        else:
+                            print('That address is either invalid, not a verified primary email or is not associated with a personal user account.')
                 
                 # Field selection
                 if self.show_login_form:
@@ -288,6 +312,8 @@ class Login:
                 # Only show the submit button (no login button)
                 submit_text = self.font.render("Send Reset Link", True, (255, 255, 255))
                 screen.blit(submit_text, (self.submit_button.x + 20, self.submit_button.y + 10))
+
+
 class MainMenu:
     def __init__(self, resources, game_instance):
         self.resources = resources
@@ -314,6 +340,7 @@ class MainMenu:
                 print("Leaderboard button clicked")
                 switch_state("Leaderboard")
             elif self.logout_button.collidepoint(mouse_pos):
+                auth.logout()
                 print("Logout button clicked")
                 switch_state("Login", reset_login=True)
             elif self.exit_button.collidepoint(mouse_pos):
