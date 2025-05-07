@@ -30,7 +30,7 @@ def load_resources():
             img = pygame.transform.scale(img, new_size)
         return img
     
-    # Example usage with scaling:
+    # Icons and buttons with scaling
     resources['menu_logo_img'] = load_and_scale('assets/icons/menu_logo.png', scale_factor=1)
     resources['game_over_img'] = load_and_scale('assets/icons/game_over.png', scale_factor=1)
     resources['play_button_img'] = load_and_scale('assets/icons/play.png', scale_factor=.85)
@@ -41,7 +41,9 @@ def load_resources():
     resources['quit_button_img'] = load_and_scale('assets/icons/quit.png', scale_factor=0.4)
     resources['restart_button_img'] = load_and_scale('assets/icons/restart.png', scale_factor=1)
     resources['menu_button_img'] = load_and_scale('assets/icons/main_menu.png', scale_factor=1)
-    
+    resources['login_button_img'] = load_and_scale('assets/icons/Log In.png', scale_factor=.6)
+    resources['create_button_img'] = load_and_scale('assets/icons/Create Account.png', scale_factor=.6)
+
     # Load background
     resources['bg_image'] = pygame.image.load('assets/bg.png').convert()
     # You can resize the background if needed
@@ -89,6 +91,12 @@ def load_resources():
     resources['biodegradable_images'] = BioGarbage.get_images()  # Modify this class to handle scaling
     resources['nonbiodegradable_images'] = NonBioGarbage.get_images()  # Modify this class to handle scaling
     resources['obstacle_images'] = Obstacle.get_images()  # Modify this class to handle scaling
+
+    # Load health system images - make sure the file paths are correct
+    resources['heart_3_img'] = load_and_scale('assets/icons/heart 3.png', scale_factor=2)
+    resources['heart_2_img'] = load_and_scale('assets/icons/heart 2.png', scale_factor=2)
+    resources['heart_1_img'] = load_and_scale('assets/icons/heart 1.png', scale_factor=2)
+    resources['heart_0_img'] = load_and_scale('assets/icons/heart 0.png', scale_factor=2)
     
     # Sounds (unchanged)
     pygame.mixer.init()
