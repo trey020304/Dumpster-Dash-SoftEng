@@ -15,12 +15,9 @@ pygame.display.set_caption('Dumpster Dash')
 # Load all resources
 resources = load_resources()
 
-# Create game instance first
 game = Game(resources)
-# Create game states
 main_menu = MainMenu(resources, game)
-# Change this line where you create GameOver:
-game_over = GameOver(resources, game)  # Instead of (resources, game.score, game.highest_score)
+game_over = GameOver(resources, game)
 
 # Set starting game state
 current_state = "MainMenu"
@@ -31,9 +28,7 @@ def switch_state(state):
 
 clock = pygame.time.Clock()
 
-# In your main game loop:
 while True:
-    # Handle background scrolling
     scroll_speed = 0
     
     if current_state == "MainMenu":

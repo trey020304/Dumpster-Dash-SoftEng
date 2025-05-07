@@ -3,13 +3,11 @@ import os
 from dotenv import load_dotenv
 import firebase_admin
 from firebase_admin import credentials, firestore
-from firebase_admin.exceptions import FirebaseError
 import json
 
 # Load environment variables
 load_dotenv()
 
-# Pyrebase config (for auth, storage, etc.)
 firebaseConfig = {
     "apiKey": os.getenv('api_key'),
     "authDomain": os.getenv('auth_domain'),
@@ -21,13 +19,39 @@ firebaseConfig = {
     "measurementId": os.getenv('measurement_id'),
 }
 
-# Initialize Firebase Firestore and Pyrebase
 cred = credentials.Certificate("serviceAccountKey.json")
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 firebase = pyrebase.initialize_app(firebaseConfig)
 auth = firebase.auth()
 
+SESSION_FILE = "session.json"
+
+# ------------------ Session Management ------------------ #
+def save_session(user):
+    with open(SESSION_FILE, "w") as f:
+        json.dump({
+            "idToken": user['idToken'],
+            "refreshToken": user['refreshToken'],
+            "localId": user['localId']
+        }, f)
+
+def load_session():
+    if os.path.exists(SESSION_FILE):
+        with open(SESSION_FILE, "r") as f:
+            session = json.load(f)
+        try:
+            user = auth.refresh(session['refreshToken'])  # Refresh token
+            session['idToken'] = user['idToken']  # Update session with new idToken
+            save_session(session)
+            print("Auto-login successful.")
+            return session['localId']
+        except:
+            print("Session expired or invalid.")
+    return None
+
+
+# ------------------ Authorization ------------------ #
 class Authorization:
     def register(self):
         email = input("Enter email: ")
@@ -41,15 +65,12 @@ class Authorization:
 
         try:
             user = auth.create_user_with_email_and_password(email, password)
-            uid = user['localId']  # Firebase Auth UID
-
-            # Add user to Firestore 'users' collection
+            uid = user['localId']
             db.collection('users').document(uid).set({
                 'email': email,
                 'username': username,
                 'highscore': 0
             })
-
             print("Successfully Registered and stored user info in Firestore.")
         except Exception as e:
             error_str = str(e)
@@ -65,11 +86,12 @@ class Authorization:
         try:
             user = auth.sign_in_with_email_and_password(email, password)
             uid = user['localId']
+            save_session(user)
             print("Successfully logged in.")
             return uid
         except Exception as e:
             try:
-                error_json = json.loads(e.args[1])  # Parse error JSON
+                error_json = json.loads(e.args[1])
                 error_message = error_json['error']['message']
 
                 if error_message in ["EMAIL_NOT_FOUND", "INVALID_PASSWORD"]:
@@ -80,8 +102,13 @@ class Authorization:
                     print(f"Login failed: {error_message}")
             except:
                 print("An unknown error occurred during login.")
+    
+    def logout():
+        if os.path.exists(SESSION_FILE):
+            os.remove(SESSION_FILE)
+        print("Logged out successfully.")
 
-
+# ------------------ High Score Handling ------------------ #
 class HighScoreDB:
     @staticmethod
     def updateCurrentPlayerHighScore(uid, score):
@@ -103,6 +130,21 @@ class HighScoreDB:
             print(f"Failed to get highscore: {e}")
             return None
 
+# ------------------ Placeholder Leaderboard ------------------ #
 class LeaderBoardDB:
     pass
 
+# ------------------ Entry Point ------------------ #
+if __name__ == "__main__":
+    auth_system = Authorization()
+
+    uid = load_session()
+    if not uid:
+        uid = auth_system.login()
+
+    if uid:
+        print(f"User ID: {uid}")
+        # Example interaction
+        score = HighScoreDB.getCurrentPlayerHighScore(uid)
+        print(f"Current High Score: {score}")
+        # auth_system.logout()
