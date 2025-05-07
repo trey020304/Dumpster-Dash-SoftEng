@@ -3,9 +3,9 @@ import random
 import sys
 from runner import Bio, NonBio
 from garbage import BioGarbage, NonBioGarbage
-from firebase import HighScoresDB
+from firebase import HighScoreDB
 
-current_player_HS = HighScoresDB
+current_player_HS = HighScoreDB
 uid = 'lyBQ8JNZn3UXdAXQYto6GhczkbJ2'
 
 class Logo:
