@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 import firebase_admin
 from firebase_admin import credentials, firestore
 import json
+import re
+
 
 # Load environment variables
 load_dotenv()
@@ -55,6 +57,12 @@ def load_session():
 class Authorization:
     def register(self):
         email = input("Enter email: ")
+
+        # Email format validation
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            print("Invalid email format.")
+            return
+
         password = input("Enter password: ")
         confirm_password = input("Confirm password: ")
         username = input("Enter username: ")
@@ -78,6 +86,7 @@ class Authorization:
                 print("This email is already registered.")
             else:
                 print(f"Registration failed: {error_str}")
+
 
     def login(self):
         email = input("Enter email: ")
@@ -130,7 +139,7 @@ class HighScoreDB:
             print(f"Failed to get highscore: {e}")
             return None
 
-# ------------------ Placeholder Leaderboard ------------------ #
+# ------------------ Leaderboard ------------------ #
 class LeaderBoardDB:
     pass
 
