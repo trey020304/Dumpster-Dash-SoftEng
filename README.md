@@ -2,7 +2,7 @@
     <img src="https://github.com/trey020304/test-repository/blob/main/images/logo%202.jpg" width=512px height=512px/>
 </p>
 
-___
+---
 
 # 🎮 What is the game about? 🎮
 
@@ -18,7 +18,7 @@ DumpsterDash is heavily inspired by the infamous game, Subway Surfers, which pla
 This is Wally Waste, the cleaning robot!
 </p>
 
-___
+---
 
 ## ♻️ Significance of the Game ♻️
 
@@ -34,8 +34,7 @@ According to the 12th goal under the Sustainable Development Goals, it involves 
 For our food and means of subsistence, human existence depends just as much on the ground as it does the ocean. Eighty percent of the human diet is made up of plants, and agriculture is a significant source of income for us. Providing habitat for millions of species, significant sources of clean air and water, and being essential for preventing climate change, forests encompass 30% of the Earth's surface. And trash, or improper rubbish segregation, is one of the elements that ruins animal habitats. Because when we scatter our rubbish around, some little creatures end up eating it and becoming ill or occasionally even perish. Our program is in line with this objective since we want to educate people about the value of segregation and how to accomplish it, as well as the effects that waste we simply put into the environment can have.
 </p>
 
-
-___
+---
 
 ## 😎 Future Plans for the Game 😎
 
@@ -43,7 +42,7 @@ ___
 - Multiple game modes!
 - Multi-platform! Mobile, consoles, etc.!
 
-___
+---
 
 <p align="center"> Screenshots and Some Visual Concepts </p>
 
@@ -74,7 +73,7 @@ ___
     Early Animation Sprites of Wally 🤖♻️
 </p>
 
-___
+---
 
 ## Overview of Dumpster Dash and the Program
 
@@ -90,8 +89,7 @@ For various game elements, the program defines a number of classes. Logos are di
 Classes like "MainMenu", "Game", and "GameOver" are used to define the different game states. The play and quit buttons' mouse button clicks are handled by the MainMenu class, which also shows on the main menu screen. The primary gameplay state, in which the user controls Wally and attempts to catch garbage with the right corresponding bin, is represented by the Game class. The game over screen, the player's score, and the highest score they've ever gotten are all displayed by the GameOver class, as well as the restart and main menu buttons. The program uses a game loop that continuously updates and redraws the game elements on the screen. It handles user input events, such as key presses and mouse clicks, and updates the game state accordingly. It also handles the scrolling background by updating the positions of the background images.
 </p>
 
-
-___
+---
 
 ## UML Diagram of Dumpster Dash
 
@@ -99,20 +97,19 @@ ___
     <img src="https://github.com/trey020304/Dumpster-Dash/blob/main/images/UML%20class.jpeg" width=848px/>
 </p>
 
-
-___
-
+---
 
 ## Video Presentation of Dumpster Dash and the Program
+
 - <a href="https://www.youtube.com/watch?v=JnIWZd-0lYs">Game Demo</a>
 - <a href="https://youtu.be/VXk6wL1Rw1Y">Presentation</a>
 
-___
-
+---
 
 ## Authors
 
+- <a href="https://github.com/leaurix">Alcayde, Louis Yvan</a>
+- <a href="https://github.com/alyssaml">Landicho, Alessandra Marie</a>
 - <a href="https://github.com/trey020304">Marcos, Mark Wilhelm Trevor</a>
 - <a href="https://github.com/kebinmirabel">Mirabel, Kevin Hans Aurick</a>
-- <a href="https://github.com/JulyanGarcia">Garcia, Julian Simon</a>
-- <a href="https://github.com/Ronnieee1">Del Mundo, Ron Gabriel</a>
+- <a href="https://github.com/kmatheuu">Mojar, Karl Mathew</a>
