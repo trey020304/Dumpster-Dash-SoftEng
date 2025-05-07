@@ -56,6 +56,9 @@ class Game:
         self.wally1 = self.active_wally
         self.wally2 = NonBio(250, 575, self.resources)
         self.garbage_group = pygame.sprite.Group()
+        self.dead = False
+        self.death_timer = None
+        self.death_delay = 1500
 
     def handle_events(self, event, switch_state):
         if event.type == pygame.KEYDOWN:
@@ -75,6 +78,12 @@ class Game:
                 switch_state("MainMenu")
 
     def update(self, switch_state):
+        if self.dead:
+            self.active_wally.update(self.garbage_group)
+            if pygame.time.get_ticks() - self.death_timer >= self.death_delay:
+                switch_state("GameOver")
+            return
+        
         self.active_wally.update(self.garbage_group)
 
         # Add new garbage if needed
@@ -94,19 +103,31 @@ class Game:
 
         # Check collisions
         collisions = pygame.sprite.spritecollide(self.active_wally, self.garbage_group, True)
+
+        correct_match = False
+
         for garbage in collisions:
-            if ((isinstance(self.active_wally, Bio)) and (isinstance(garbage, NonBioGarbage)) or 
-                (isinstance(self.active_wally, NonBio)) and isinstance(garbage, BioGarbage)):
+            # Wrong match: Bio hits NonBioGarbage or NonBio hits BioGarbage
+            if ((isinstance(self.active_wally, Bio) and isinstance(garbage, NonBioGarbage)) or 
+                (isinstance(self.active_wally, NonBio) and isinstance(garbage, BioGarbage))):
                 self.last_score = self.score
                 if self.score > self.highest_score:
                     self.highest_score = self.score
                 self.resources['game_over_sound'].play()
-                pygame.time.wait(1500)
-                switch_state("GameOver")
-            else:
-                self.resources['get_item_sound'].play()
-                self.score += 1
-                self.increment_timer += 1
+                self.death_timer = pygame.time.get_ticks()
+                self.dead = True
+                self.active_wally.dead = True
+                self.active_wally.current_animation = self.active_wally.death_animation
+                break
+            
+            # Good match
+            correct_match = True
+
+        # Score only if a correct match happened 
+        if correct_match:
+            self.resources['get_item_sound'].play()
+            self.score += 1
+            self.increment_timer += 1
 
         # Increase speed periodically
         if self.increment_timer >= 5:
@@ -125,7 +146,11 @@ class Game:
         self.garbage_group.add(garbage)
 
     def draw(self, screen):
-        self.active_wally.draw(screen)
+        if self.dead:
+            self.active_wally.draw(screen)
+        else:
+            self.active_wally.draw(screen)
+            
         font = self.font
         
         # Score display with outline

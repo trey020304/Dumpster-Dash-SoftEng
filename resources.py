@@ -6,6 +6,15 @@ SCREEN_H = 720
 FPS = 60
 HEIGHT = 1000
 
+def load_spritesheet(path, frame_width, frame_height, num_frames):
+    sheet = pygame.image.load(path).convert_alpha()
+    frames = []
+    for i in range(num_frames):
+        rect = pygame.Rect(i * frame_width, 0, frame_width, frame_height)
+        frame = sheet.subsurface(rect).copy()
+        frames.append(frame)
+    return frames
+
 def load_resources():
     resources = {}
     
@@ -39,12 +48,10 @@ def load_resources():
     resources['height'] = HEIGHT
     
     # Load animations
-    resources['bio_animation'] = []
-    resources['nonbio_animation'] = []
-    for i in range(16):
-        resources['bio_animation'].append(pygame.image.load(f'assets/wallyrunbio/{i}.png'))
-        resources['nonbio_animation'].append(pygame.image.load(f'assets/wallyrunnonbio/{i}.png'))
-    
+    resources['bio_animation'] = load_spritesheet('assets/wallyrunbio_spritesheet.png', 150, 150, 16)
+    resources['nonbio_animation'] = load_spritesheet('assets/wallyrunnonbio_spritesheet.png', 150, 150, 16)
+    resources['death_animation'] = load_spritesheet('assets/wally_death.png', 150, 150, 16)
+
     # Load garbage images
     bio_filenames = ['banana peel.png', 'milk carton.png', 'box.png', 'Leaves.png', 'Poop.png', 
                     'Log.png', 'Book.png', 'Apple.png', 'Meat.png', 'Fishbone.png']
