@@ -30,18 +30,31 @@ def switch_state(state):
 
 clock = pygame.time.Clock()
 
+# In your main game loop:
 while True:
-    # Draw scrolling background
-    if resources['b_pos'] >= SCREEN_H:
-        resources['b_pos'] = -SCREEN_H
-    if resources['o_pos'] >= SCREEN_H:
-        resources['o_pos'] = -SCREEN_H
-
-    resources['b_pos'] += resources['speed']
-    resources['o_pos'] += resources['speed']
-
-    screen.blit(resources['bg_image'], (0, resources['b_pos']))
-    screen.blit(resources['overlap_bg_image'], (0, resources['o_pos']))
+    # Handle background scrolling
+    scroll_speed = 0
+    
+    if current_state == "MainMenu":
+        scroll_speed = resources['menu_speed']
+    elif current_state == "Game" and not game.dead:
+        scroll_speed = game.speed
+    
+    # Update scroll position (using modulo for seamless wrapping)
+    resources['scroll_pos'] = (resources['scroll_pos'] + scroll_speed) % resources['bg_height']
+    
+    # Draw the background - two copies for seamless scrolling
+    screen.blit(resources['bg_image'], (0, resources['scroll_pos'] - resources['bg_height']))
+    screen.blit(resources['bg_image'], (0, resources['scroll_pos']))
+    
+    # If your background is smaller than screen height, draw a third copy
+    if resources['bg_height'] < SCREEN_H:
+        screen.blit(resources['bg_image'], (0, resources['scroll_pos'] + resources['bg_height']))
+    
+    # Draw second copies to fill any gap
+    if resources['b_pos'] > 0:
+        screen.blit(resources['bg_image'], (0, resources['b_pos'] - SCREEN_H))
+        screen.blit(resources['overlap_bg_image'], (0, resources['o_pos'] - SCREEN_H))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:

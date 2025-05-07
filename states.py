@@ -16,7 +16,10 @@ class Logo:
 class MainMenu:
     def __init__(self, resources, game_instance):
         self.resources = resources
-        self.game = game_instance  # Reference to the Game instance
+        self.game = game_instance
+        # Reset background position when menu loads
+        resources['b_pos'] = 0
+        resources['o_pos'] = 720
         self.play_button = resources['play_button_img'].get_rect(center=(250, 500))
         self.exit_button = resources['quit_button_img'].get_rect(center=(250, 600))
         self.menu_logo = Logo(250, 200, resources['menu_logo_img'])
@@ -50,7 +53,11 @@ class Game:
         self.last_score = 0
         self.font = pygame.font.Font(pygame.font.get_default_font(), 25)
         self.increment_timer = 0
-        self.speed = 7
+        self.speed = self.resources['game_speed']  # Use the initial game speed
+        self.resources['scroll_pos'] = 0  # Reset scroll position
+        # Reset background positions
+        self.resources['b_pos'] = 0
+        self.resources['o_pos'] = 720
         self.active_wally = Bio(250, 575, self.resources)
         self.prev_wally_position = self.active_wally.rect.center
         self.wally1 = self.active_wally
@@ -61,6 +68,11 @@ class Game:
         self.death_delay = 1500
 
     def handle_events(self, event, switch_state):
+        if self.dead:  # Don't process any movement or switching controls if dead
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                switch_state("MainMenu")
+            return
+            
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT and self.active_wally.rect.center[0] > self.resources['left_lane']:
                 self.active_wally.rect.left -= 115
@@ -97,7 +109,7 @@ class Game:
 
         # Move garbage
         for garbage in self.garbage_group:
-            garbage.rect.y += self.speed
+            garbage.rect.y += self.speed  # This matches the background speed
             if garbage.rect.top >= self.resources['height']:
                 garbage.kill()
 

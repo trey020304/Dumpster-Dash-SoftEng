@@ -26,12 +26,12 @@ def load_resources():
     resources['restart_button_img'] = pygame.image.load('assets/logos_and_icons/restart.png').convert_alpha()
     resources['menu_button_img'] = pygame.image.load('assets/logos_and_icons/main_menu.png').convert_alpha()
     
-    # Background
+    # Load background
     resources['bg_image'] = pygame.image.load('assets/bg.png').convert()
-    resources['overlap_bg_image'] = pygame.image.load('assets/bg.png').convert()
-    resources['b_pos'] = 0
-    resources['o_pos'] = 720
-    resources['speed'] = 7
+    resources['bg_height'] = resources['bg_image'].get_height()
+    resources['scroll_pos'] = 0  # Single scroll position for both images
+    resources['menu_speed'] = 3
+    resources['game_speed'] = 7
     
     # Lanes
     resources['left_lane'] = 150
