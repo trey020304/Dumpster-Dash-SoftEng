@@ -55,17 +55,11 @@ def load_session():
 
 # ------------------ Authorization ------------------ #
 class Authorization:
-    def register(self):
-        email = input("Enter email: ")
-
+    def register(email, password, confirm_password, username):
         # Email format validation
         if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
             print("Invalid email format.")
             return
-
-        password = input("Enter password: ")
-        confirm_password = input("Confirm password: ")
-        username = input("Enter username: ")
 
         if password != confirm_password:
             print("Passwords do not match.")
@@ -79,24 +73,20 @@ class Authorization:
                 'username': username,
                 'highscore': 0
             })
-            print("Successfully Registered and stored user info in Firestore.")
+            return 'success'
         except Exception as e:
             error_str = str(e)
             if "EMAIL_EXISTS" in error_str:
-                print("This email is already registered.")
+                return 'already_registered'
             else:
-                print(f"Registration failed: {error_str}")
+                return 'registration_failed'
 
 
-    def login(self):
-        email = input("Enter email: ")
-        password = input("Enter password: ")
-
+    def login(email, password):
         try:
             user = auth.sign_in_with_email_and_password(email, password)
             uid = user['localId']
             save_session(user)
-            print("Successfully logged in.")
             return uid
         except Exception as e:
             try:
@@ -104,18 +94,21 @@ class Authorization:
                 error_message = error_json['error']['message']
 
                 if error_message in ["EMAIL_NOT_FOUND", "INVALID_PASSWORD"]:
-                    print("Login Failed: Invalid Credentials!")
-                elif error_message == "USER_DISABLED":
-                    print("Error: This user account has been disabled.")
-                else:
-                    print(f"Login failed: {error_message}")
+                    return 'invalid_credentials'
             except:
-                print("An unknown error occurred during login.")
+                return 'unknown_error'
     
     def logout():
         if os.path.exists(SESSION_FILE):
             os.remove(SESSION_FILE)
         print("Logged out successfully.")
+
+    def reset_password(email):
+        try:
+            auth.send_password_reset_email(email)
+            return 'reset_email_sent'
+        except:
+            return 'reset_failed'
 
 # ------------------ High Score Handling ------------------ #
 class HighScoreDB:
@@ -159,18 +152,18 @@ class LeaderBoardDB:
         except Exception as e:
             print(f"Error fetching leaderboard: {e}")
             return []
+        
 
-# ------------------ Entry Point ------------------ #
-if __name__ == "__main__":
-    auth_system = Authorization()
+# if __name__ == "__main__":
+#     auth_system = Authorization()
 
-    uid = load_session()
-    if not uid:
-        uid = auth_system.login()
+#     uid = load_session()
+#     if not uid:
+#         uid = auth_system.login()
 
-    if uid:
-        print(f"User ID: {uid}")
-        # Example interaction
-        score = HighScoreDB.getCurrentPlayerHighScore(uid)
-        print(f"Current High Score: {score}")
-        # auth_system.logout()
+#     if uid:
+#         print(f"User ID: {uid}")
+#         # Example interaction
+#         score = HighScoreDB.getCurrentPlayerHighScore(uid)
+#         print(f"Current High Score: {score}")
+        # logout()  # Uncomment to test logout functionality

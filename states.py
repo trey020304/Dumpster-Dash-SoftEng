@@ -79,7 +79,6 @@ class Leaderboard:
 
         return [{"name": entry.get("username", "-"), "score": entry.get("highscore", 0)} for entry in trimmed]
 
-
     def handle_events(self, event, switch_state):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.back_button.collidepoint(event.pos):
