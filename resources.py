@@ -19,12 +19,12 @@ def load_resources():
     resources = {}
     
     # Load images
-    resources['menu_logo_img'] = pygame.image.load('assets/logos_and_icons/menu_logo.png').convert_alpha()
-    resources['game_over_img'] = pygame.image.load('assets/logos_and_icons/game_over.png').convert_alpha()
-    resources['play_button_img'] = pygame.image.load('assets/logos_and_icons/play.png').convert_alpha()
-    resources['quit_button_img'] = pygame.image.load('assets/logos_and_icons/quit.png').convert_alpha()
-    resources['restart_button_img'] = pygame.image.load('assets/logos_and_icons/restart.png').convert_alpha()
-    resources['menu_button_img'] = pygame.image.load('assets/logos_and_icons/main_menu.png').convert_alpha()
+    resources['menu_logo_img'] = pygame.image.load('assets/icons/menu_logo.png').convert_alpha()
+    resources['game_over_img'] = pygame.image.load('assets/icons/game_over.png').convert_alpha()
+    resources['play_button_img'] = pygame.image.load('assets/icons/play.png').convert_alpha()
+    resources['quit_button_img'] = pygame.image.load('assets/icons/quit.png').convert_alpha()
+    resources['restart_button_img'] = pygame.image.load('assets/icons/restart.png').convert_alpha()
+    resources['menu_button_img'] = pygame.image.load('assets/icons/main_menu.png').convert_alpha()
     
     # Load background
     resources['bg_image'] = pygame.image.load('assets/bg.png').convert()
@@ -48,18 +48,18 @@ def load_resources():
     resources['height'] = HEIGHT
     
     # Load animations
-    resources['bio_animation'] = load_spritesheet('assets/wallyrunbio_spritesheet.png', 150, 150, 16)
-    resources['nonbio_animation'] = load_spritesheet('assets/wallyrunnonbio_spritesheet.png', 150, 150, 16)
-    resources['death_animation'] = load_spritesheet('assets/wally_death.png', 150, 150, 16)
+    resources['bio_animation'] = load_spritesheet('assets/animations/wallyrunbio_spritesheet.png', 150, 150, 16)
+    resources['nonbio_animation'] = load_spritesheet('assets/animations/wallyrunnonbio_spritesheet.png', 150, 150, 16)
+    resources['death_animation'] = load_spritesheet('assets/animations/wally_death.png', 150, 150, 16)
 
     # Load garbage images
     bio_filenames = ['banana peel.png', 'milk carton.png', 'box.png', 'Leaves.png', 'Poop.png', 
                     'Log.png', 'Book.png', 'Apple.png', 'Meat.png', 'Fishbone.png']
-    resources['biodegradable_images'] = [pygame.image.load('assets/' + fn) for fn in bio_filenames]
+    resources['biodegradable_images'] = [pygame.image.load('assets/obstacles/' + fn) for fn in bio_filenames]
     
     nonbio_filenames = ['plastic bag.png', 'soda bottle.png', 'water bottle.png', 'Battery.png', 
                        'Lightbulb.png', 'Phone.png', 'Laptop.png', 'Can.png', 'Soda.png', 'Glass.png']
-    resources['nonbiodegradable_images'] = [pygame.image.load('assets/' + fn) for fn in nonbio_filenames]
+    resources['nonbiodegradable_images'] = [pygame.image.load('assets/obstacles/' + fn) for fn in nonbio_filenames]
     
     # Load sounds
     pygame.mixer.init()
