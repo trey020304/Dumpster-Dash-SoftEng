@@ -1,5 +1,5 @@
 import pygame
-from garbage import BioGarbage, NonBioGarbage
+from garbage import BioGarbage, NonBioGarbage, Obstacle
 
 # Constants
 SCREEN_W = 500
@@ -56,12 +56,14 @@ def load_resources():
     # Load garbage images
     resources['biodegradable_images'] = BioGarbage.get_images()
     resources['nonbiodegradable_images'] = NonBioGarbage.get_images()
+    resources['obstacle_images'] = Obstacle.get_images()
     
     # Load sounds
     pygame.mixer.init()
-    resources['game_music'] = "assets/music/game_music.wav"
-    resources['get_item_sound'] = pygame.mixer.Sound("assets/music/get_item.mp3")
-    resources['game_over_sound'] = pygame.mixer.Sound("assets/music/game_over.mp3")
+    resources['game_music'] = "assets/audio/game_music.wav"
+    resources['get_item_sound'] = pygame.mixer.Sound("assets/audio/get_item.mp3")
+    resources['game_over_sound'] = pygame.mixer.Sound("assets/audio/game_over.mp3")
+    resources['wrong_bin_sound'] = pygame.mixer.Sound("assets/audio/wrong_bin.mp3")
     
     # Play music
     pygame.mixer.music.load(resources['game_music'])

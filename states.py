@@ -2,7 +2,7 @@ import pygame
 import random
 import sys
 from runner import Bio, NonBio
-from garbage import BioGarbage, NonBioGarbage
+from garbage import BioGarbage, NonBioGarbage, Obstacle
 from firebase import HighScoreDB
 
 current_player_HS = HighScoreDB
@@ -146,13 +146,23 @@ class Game:
             self.speed += 0.75
             self.increment_timer = 0
 
+    # In states.py, modify the create_garbage method in the Game class:
     def create_garbage(self):
         lane = random.choice(self.resources['objectlanes'])
-        garbage_type = random.choice([BioGarbage, NonBioGarbage])
-        image = random.choice(
-            self.resources['biodegradable_images'] if garbage_type == BioGarbage 
-            else self.resources['nonbiodegradable_images']
-        )
+        # 20% chance to spawn an obstacle, 80% chance to spawn regular garbage
+        garbage_type = random.choices(
+            [Obstacle, BioGarbage, NonBioGarbage],
+            weights=[0.2, 0.4, 0.4]
+        )[0]
+        
+        if garbage_type == Obstacle:
+            image = random.choice(self.resources['obstacle_images'])
+        else:
+            image = random.choice(
+                self.resources['biodegradable_images'] if garbage_type == BioGarbage 
+                else self.resources['nonbiodegradable_images']
+            )
+        
         garbage = garbage_type(image, lane, -self.resources['height'] / 2, self.resources)
         garbage.rect.center = (lane, -self.resources['height'] / 2)
         self.garbage_group.add(garbage)

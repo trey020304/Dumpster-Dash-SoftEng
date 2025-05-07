@@ -29,3 +29,10 @@ class NonBioGarbage(Garbage):
     @classmethod
     def get_images(cls):
         return cls.load_images(cls.filenames)
+   
+class Obstacle(Garbage):
+    filenames = ['puddle.png', 'road barricade.png', 'traffic cone.png']
+    
+    @classmethod
+    def get_images(cls):
+        return cls.load_images(cls.filenames)
