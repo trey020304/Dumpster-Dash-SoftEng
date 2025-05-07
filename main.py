@@ -1,7 +1,7 @@
 import pygame
 from pygame.locals import *
 import sys
-from states import MainMenu, Game, GameOver, Leaderboard
+from states import MainMenu, Game, GameOver, Leaderboard, Login
 from resources import load_resources, SCREEN_W, SCREEN_H, FPS
 
 # Initialize pygame
@@ -18,12 +18,14 @@ resources = load_resources()
 game = Game(resources)
 
 # Create all game states
+login = Login(resources, game)
 main_menu = MainMenu(resources, game)
 game_over = GameOver(resources, game)
 leaderboard = Leaderboard(resources, game)
 
 # Dictionary to manage all states
 states = {
+    "Login": login, 
     "MainMenu": main_menu,
     "Game": game,
     "GameOver": game_over,
@@ -31,11 +33,16 @@ states = {
 }
 
 # Set starting game state
-current_state = "MainMenu"
+current_state = "Login"
 
-def switch_state(state):
+def switch_state(state, reset_login=False):
     global current_state
-    print(f"Switching state from {current_state} to {state}")  # Debug print
+    print(f"Switching state from {current_state} to {state}")
+    
+    if reset_login and state == "Login":
+        # Access the login state through the states dictionary
+        states["Login"].reset_state()
+    
     current_state = state
 
 clock = pygame.time.Clock()
@@ -45,7 +52,7 @@ while True:
     # Handle background scrolling
     scroll_speed = 0
     
-    if current_state == "MainMenu" or current_state == "Leaderboard":
+    if current_state == "MainMenu" or current_state == "Leaderboard" or current_state == "Login":
         scroll_speed = resources['menu_speed']
     elif current_state == "Game" and not game.dead:
         scroll_speed = game.speed
