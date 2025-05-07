@@ -4,69 +4,80 @@ import sys
 from states import MainMenu, Game, GameOver
 from resources import load_resources, SCREEN_W, SCREEN_H, FPS
 
-# Initialize pygame
-pygame.init()
+class GameApp:
+    def __init__(self):
+        pygame.init()
+        self.screen = pygame.display.set_mode((SCREEN_W, SCREEN_H))
+        pygame.display.set_caption('Dumpster Dash')
+        
+        self.resources = load_resources()
+        self.game = Game(self.resources)
+        self.main_menu = MainMenu(self.resources, self.game)
+        self.game_over = GameOver(self.resources, self.game)
+        self.current_state = "MainMenu"
+        self.clock = pygame.time.Clock()
+        
+    def switch_state(self, state):
+        self.current_state = state
+        
+    def update_background(self):
+        """Handle background scrolling logic"""
+        for pos_key in ['b_pos', 'o_pos']:
+            if self.resources[pos_key] >= SCREEN_H:
+                self.resources[pos_key] = -SCREEN_H
+            self.resources[pos_key] += self.resources['speed']
+        
+    def draw_background(self):
+        """Draw the scrolling background"""
+        self.screen.blit(self.resources['bg_image'], (0, self.resources['b_pos']))
+        self.screen.blit(self.resources['overlap_bg_image'], (0, self.resources['o_pos']))
+        
+    def handle_events(self):
+        """Process all pygame events"""
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+                
+            # Delegate event handling to current state
+            if self.current_state == "MainMenu":
+                self.main_menu.handle_events(event, self.switch_state)
+            elif self.current_state == "Game":
+                self.game.handle_events(event, self.switch_state)
+            elif self.current_state == "GameOver":
+                self.game_over.handle_events(event, self.switch_state)
+                
+    def update(self):
+        """Update game state"""
+        if self.current_state == "MainMenu":
+            self.main_menu.update()
+        elif self.current_state == "Game":
+            self.game.update(self.switch_state)
+        elif self.current_state == "GameOver":
+            self.game_over.update()
+            self.game_over.highest_score = self.game.highest_score
+            
+    def draw(self):
+        """Draw current game state"""
+        if self.current_state == "MainMenu":
+            self.main_menu.draw(self.screen)
+        elif self.current_state == "Game":
+            self.game.draw(self.screen)
+        elif self.current_state == "GameOver":
+            self.game_over.draw(self.screen)
+            
+    def run(self):
+        """Main game loop"""
+        while True:
+            self.update_background()
+            self.draw_background()
+            self.handle_events()
+            self.update()
+            self.draw()
+            
+            pygame.display.update()
+            self.clock.tick(FPS)
 
-# Create window
-screen = pygame.display.set_mode((SCREEN_W, SCREEN_H))
-pygame.display.set_caption('Dumpster Dash')
-
-# Load all resources
-resources = load_resources()
-
-# Create game instance first
-game = Game(resources)
-# Create game states
-main_menu = MainMenu(resources, game)
-# Change this line where you create GameOver:
-game_over = GameOver(resources, game)  # Instead of (resources, game.score, game.highest_score)
-
-# Set starting game state
-current_state = "MainMenu"
-
-def switch_state(state):
-    global current_state
-    current_state = state
-
-clock = pygame.time.Clock()
-
-while True:
-    # Draw scrolling background
-    if resources['b_pos'] >= SCREEN_H:
-        resources['b_pos'] = -SCREEN_H
-    if resources['o_pos'] >= SCREEN_H:
-        resources['o_pos'] = -SCREEN_H
-
-    resources['b_pos'] += resources['speed']
-    resources['o_pos'] += resources['speed']
-
-    screen.blit(resources['bg_image'], (0, resources['b_pos']))
-    screen.blit(resources['overlap_bg_image'], (0, resources['o_pos']))
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-
-        if current_state == "MainMenu":
-            main_menu.handle_events(event, switch_state)
-        elif current_state == "Game":
-            game.handle_events(event, switch_state)
-        elif current_state == "GameOver":
-            game_over.handle_events(event, switch_state)
-
-    if current_state == "MainMenu":
-        main_menu.update()
-        main_menu.draw(screen)
-    # In the main game loop, modify the Game state handling:
-    elif current_state == "Game":
-        game.update(switch_state)
-        game.draw(screen)
-    elif current_state == "GameOver":
-        game_over.update()
-        game_over.draw(screen)
-        # Update the highest score from the current game
-        game_over.highest_score = game.highest_score
-
-    pygame.display.update()
-    clock.tick(FPS)
+if __name__ == "__main__":
+    app = GameApp()
+    app.run()
