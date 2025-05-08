@@ -156,17 +156,3 @@ class LeaderBoardDB:
             print(f"Error fetching leaderboard: {e}")
             return []
         
-
-# if __name__ == "__main__":
-#     auth_system = Authorization()
-
-#     uid = load_session()
-#     if not uid:
-#         uid = auth_system.login()
-
-#     if uid:
-#         print(f"User ID: {uid}")
-#         # Example interaction
-#         score = HighScoreDB.getCurrentPlayerHighScore(uid)
-#         print(f"Current High Score: {score}")
-        # logout()  # Uncomment to test logout functionality
