@@ -86,20 +86,23 @@ class Authorization:
 
 
     def login(email, password):
+        if not email or not password:
+            return 'invalid_credentials'
         try:
             user = auth.sign_in_with_email_and_password(email, password)
             uid = user['localId']
             save_session(user)
+            print(uid + ' is the user.')
             return uid
         except Exception as e:
             try:
                 error_json = json.loads(e.args[1])
                 error_message = error_json['error']['message']
-
-                if error_message in ["EMAIL_NOT_FOUND", "INVALID_PASSWORD"]:
+                if error_message in ["EMAIL_NOT_FOUND", "INVALID_PASSWORD", "INVALID_EMAIL"]:
                     return 'invalid_credentials'
             except:
                 return 'unknown_error'
+            return 'unknown_error'
     
     def logout():
         if os.path.exists(SESSION_FILE):

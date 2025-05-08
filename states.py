@@ -96,12 +96,20 @@ class Login:
                     self.reset_state()
                 elif self.submit_button.collidepoint(mouse_pos):
                     if self.show_login_form:
+                        # Add validation for empty fields
+                        if not self.email_text or not self.password_text:
+                            print("Please fill in all fields!")
+                            switch_state("Login")
+                            return
+                        
                         global uid
                         uid = auth.login(self.email_text, self.password_text)
-                        if (uid == 'invalid_credentials' or uid == 'unknown_error'):
+                        if uid in ('invalid_credentials', 'unknown_error'):
                             print("Invalid credentials!")
+                            switch_state("Login")
                         else:
                             switch_state("MainMenu")
+                            print('Logging in...')
 
                     elif self.show_create_account:
                         self.activate_submit_button = auth.register(self.email_text, self.password_text, self.confirm_password_text, self.username_text)
