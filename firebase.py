@@ -85,11 +85,11 @@ class Authorization:
                 return 'registration_failed'
 
 
-    def login(self, email, password):
+    def login(email, password):
         try:
             user = auth.sign_in_with_email_and_password(email, password)
             uid = user['localId']
-            self.save_session(user)
+            save_session(user)
             return uid
         except Exception as e:
             try:
