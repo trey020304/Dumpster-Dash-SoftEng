@@ -338,6 +338,8 @@ class MainMenu:
                 switch_state("Game")
             elif self.leaderboard_button.collidepoint(mouse_pos):
                 print("Leaderboard button clicked")
+                lb = Leaderboard(self.resources, self.game)
+                lb.refresh()
                 switch_state("Leaderboard")
             elif self.logout_button.collidepoint(mouse_pos):
                 auth.logout()
@@ -368,15 +370,17 @@ class Leaderboard:
         self.font_large = pygame.font.Font(pygame.font.get_default_font(), 36)
         self.font_medium = pygame.font.Font(pygame.font.get_default_font(), 20)
         self.font_small = pygame.font.Font(pygame.font.get_default_font(), 16)
+        self.leaderboard_data = []  # Initialize empty, to be filled on refresh
+
+    def refresh(self):
         self.leaderboard_data = self.fetch_leaderboard_data()
-        
+
     def fetch_leaderboard_data(self):
         firebase_data = LeaderBoardDB.get_leaderboard_from_DB()
-        
         firebase_data.sort(key=lambda x: x["highscore"], reverse=True)
         trimmed = firebase_data[:10]
-
         return [{"name": entry.get("username", "-"), "score": entry.get("highscore", 0)} for entry in trimmed]
+
 
     def handle_events(self, event, switch_state):
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -387,14 +391,14 @@ class Leaderboard:
         pass
 
     def draw(self, screen):
+        self.refresh()
         # Draw leaderboard background
         screen.blit(self.resources['leaderboard_img'], (47, -37))
-        
         # Draw column headers
         rank_header = self.font_small.render("RANK", True, (255, 255, 255))
         name_header = self.font_small.render("NAME", True, (255, 255, 255))
         score_header = self.font_small.render("SCORE", True, (255, 255, 255))
-        
+    
         screen.blit(rank_header, (92.5, 142.5))
         screen.blit(name_header, (167.5, 142.5))
         screen.blit(score_header, (340, 142.5))

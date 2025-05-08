@@ -138,6 +138,7 @@ class HighScoreDB:
 
 # ------------------ Leaderboard ------------------ #
 class LeaderBoardDB:
+    @staticmethod
     def get_leaderboard_from_DB():
         try:
             users_ref = db.collection('users')
