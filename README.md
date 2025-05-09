@@ -2,7 +2,7 @@
 # 🎮 Dumpster Dash - Enhanced Edition ♻️
 
 <p align="center">
-    <img src="https://github.com/trey020304/test-repository/blob/main/images/logo%202.jpg" width=512px height=512px/>
+    <img src="https://github.com/trey020304/Dumpster-Dash-SoftEng/blob/main/assets/icons/menu_logo.png" width=512px height=512px/>
 </p>
 
 ---
@@ -79,16 +79,14 @@ Game flow is managed through three main states: The "MainMenu" state handles UI 
 ## UML Diagram of Dumpster Dash
 
 <p align="center">
-    <img src="https://github.com/trey020304/Dumpster-Dash/blob/main/images/UML%20class.jpeg" width=848px/>
+    <img src="https://github.com/trey020304/Dumpster-Dash-SoftEng/blob/main/images/classdiagram.png" width=848px/>
 </p>
 
 ---
 
-## Video Presentation of Dumpster Dash and the Program
+## Dumpster Dash Demo
 
 - <a href="https://www.youtube.com/watch?v=JnIWZd-0lYs">Game Demo</a>
-- <a href="https://youtu.be/VXk6wL1Rw1Y">Presentation</a>
-
 ---
 
 ## 👨‍💻 Development Team
