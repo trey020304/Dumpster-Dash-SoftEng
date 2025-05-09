@@ -78,7 +78,7 @@ class Login:
         self.back_button_x = self.resources['back_button_img'].get_rect(center=(450, 100))
 
     def handle_events(self, event, switch_state):
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        if (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1):
             mouse_pos = event.pos
             
             if not (self.show_login_form or self.show_create_account or self.show_forgot_password):
@@ -337,7 +337,7 @@ class MainMenu:
         
 
     def handle_events(self, event, switch_state):
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        if (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1):
             mouse_pos = event.pos
             
             if self.play_button.collidepoint(mouse_pos):
@@ -391,7 +391,7 @@ class Leaderboard:
 
 
     def handle_events(self, event, switch_state):
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        if (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1):
             if self.back_button.collidepoint(event.pos):
                 switch_state("MainMenu")
 
@@ -593,7 +593,7 @@ class GameOver:
         self.rect = resources['game_over_img'].get_rect(center=(250, 200))
 
     def handle_events(self, event, switch_state):
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        if (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1):
             if self.restart_button.collidepoint(event.pos):
                 self.game.reset_game()
                 switch_state("Game")
