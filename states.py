@@ -1,4 +1,5 @@
 import pygame
+from pygame.locals import *
 import random
 import sys
 from runner import Bio, NonBio
@@ -22,305 +23,467 @@ class Logo:
 
 class Login:
     def __init__(self, resources, game_instance):
-        self.resources = resources  # Store resources as instance variable
+        self.resources = resources
         self.game = game_instance
         self.menu_logo = Logo(250, 250, resources['menu_logo_img'])
-        self.activate_submit_button = ''
-        self.reset_password_status = ''
         
-        # Initialize all state variables
+        # Notification system
+        self.notification_text = ""
+        self.notification_timer = 0
+        self.notification_duration = 3000
+        self.notification_color = (0, 255, 0)
+        self.show_notification = False
+        self.notification_rect = pygame.Rect(50, 30, 400, 30)
+        
+        # Form state management
         self.show_login_form = False
         self.show_create_account = False
         self.show_forgot_password = False
-        
-        # Initialize fonts
-        self.font = pygame.font.Font(pygame.font.get_default_font(), 20)
-        self.small_font = pygame.font.Font(pygame.font.get_default_font(), 16)
-        
-        # Initialize text fields
         self.email_text = ""
         self.username_text = ""
         self.password_text = ""
         self.confirm_password_text = ""
         self.active_field = None
         
-        # Create overlay
+        # UI positioning - ADDED ALL NECESSARY POSITIONING ATTRIBUTES
+        self.title_y = 150
+        self.label_x = 50
+        self.field_x = 150
+        self.field_width = 200
+        self.field_height = 32
+        self.login_email_label_y = 200  # Added this
+        self.login_password_label_y = 250  # Added this
+        
+        # UI styling
+        self.font = pygame.font.Font(None, 24)
+        self.small_font = pygame.font.Font(None, 18)
         self.overlay = pygame.Surface((500, 720), pygame.SRCALPHA)
         self.overlay.fill((0, 0, 0, 180))
         
-        # Initialize all buttons here (only once)
+        # Initialize UI components
         self._init_buttons()
+        self._init_field_rects()
 
     def _init_buttons(self):
-        """Initialize all button rects once"""
-        self.submit_button = self.resources['create_button_img'].get_rect(center=(250, 600))
-        self.back_button_x = self.resources['back_button_img'].get_rect(center=(450, 100))
+        """Initialize all button rectangles"""
+        self.submit_button = pygame.Rect(150, 450, 200, 40)
+        self.back_button = self.resources['back_button_img'].get_rect(center=(450, 100))
         self.login_button = self.resources['login_button_img'].get_rect(center=(380, 575))
         self.create_button = self.resources['create_button_img'].get_rect(center=(130, 575))
 
-    def reset_state(self):
-        """Reset only the form states, not the buttons"""
-        self.show_login_form = False
-        self.show_create_account = False
-        self.show_forgot_password = False
-        self.email_text = ""
-        self.username_text = ""
-        self.password_text = ""
-        self.confirm_password_text = ""
-        self.active_field = None
+    def _init_field_rects(self):
+        """Initialize field rectangles with positions"""
+        # Login form fields
+        self.login_email_rect = pygame.Rect(self.field_x, self.login_email_label_y, self.field_width, self.field_height)
+        self.login_password_rect = pygame.Rect(self.field_x, self.login_password_label_y, self.field_width, self.field_height)
         
-        # Create semi-transparent background surface
-        self.overlay = pygame.Surface((500, 720), pygame.SRCALPHA)
-        self.overlay.fill((0, 0, 0, 180))  # Black with 180/255 opacity
+        # Create account fields
+        self.email_rect = pygame.Rect(self.field_x, 200, self.field_width, self.field_height)
+        self.username_rect = pygame.Rect(self.field_x, 250, self.field_width, self.field_height)
+        self.password_rect = pygame.Rect(self.field_x, 300, self.field_width, self.field_height)
+        self.confirm_password_rect = pygame.Rect(self.field_x, 350, self.field_width, self.field_height)
+
+        # Forgot password field and link position
+        self.forgot_email_label_y = 250  # You can adjust this as needed
+        self.forgot_email_rect = pygame.Rect(self.field_x, self.forgot_email_label_y, self.field_width, self.field_height)
+        # Center "Forgot Password?" link under password field
+        forgot_text_width = self.small_font.size("Forgot Password?")[0]
+        self.forgot_password_pos = (250 - forgot_text_width // 2, self.login_password_label_y + 40)
+
+    def _draw_login_form(self, screen):
+        """Draw the login form with email and password fields"""
+        # Title
+        title = self.font.render("Login to Your Account", True, (255, 255, 255))
+        screen.blit(title, (250 - title.get_width()//2, self.title_y))
         
-        # Reuse existing buttons for forms
-        self.submit_button = self.resources['create_button_img'].get_rect(center=(250, 600))  # Moved up for forgot password
-        self.back_button_x = self.resources['back_button_img'].get_rect(center=(450, 100))
+        # Email field - USING THE DEFINED ATTRIBUTES
+        screen.blit(self.font.render("Email:", True, (255, 255, 255)), 
+                   (self.label_x, self.login_email_label_y))
+        pygame.draw.rect(screen, 
+                        (255, 255, 255) if self.active_field == "login_email" else (200, 200, 200), 
+                        self.login_email_rect, 2)
+        email_text = self.font.render(self.email_text, True, (255, 255, 255))
+        screen.blit(email_text, (self.login_email_rect.x + 5, self.login_email_rect.y + 5))
+        
+        # Password field - USING THE DEFINED ATTRIBUTES
+        screen.blit(self.font.render("Password:", True, (255, 255, 255)), 
+                   (self.label_x, self.login_password_label_y))
+        pygame.draw.rect(screen, 
+                        (255, 255, 255) if self.active_field == "login_password" else (200, 200, 200), 
+                        self.login_password_rect, 2)
+        password_text = self.font.render("*" * len(self.password_text), True, (255, 255, 255))
+        screen.blit(password_text, (self.login_password_rect.x + 5, self.login_password_rect.y + 5))
+        
+        # Submit button
+        pygame.draw.rect(screen, (0, 100, 200), self.submit_button, border_radius=5)
+        submit_text = self.font.render("LOGIN", True, (255, 255, 255))
+        screen.blit(submit_text, (250 - submit_text.get_width()//2, 410))
 
     def handle_events(self, event, switch_state):
+        mouse_pos = pygame.mouse.get_pos()
+
         if event.type == pygame.MOUSEBUTTONDOWN:
-            mouse_pos = event.pos
-            
             if not (self.show_login_form or self.show_create_account or self.show_forgot_password):
-                # Main screen buttons
                 if self.login_button.collidepoint(mouse_pos):
                     self.show_login_form = True
+                    self.email_text = ""
+                    self.password_text = ""
+                    self.active_field = None
                 elif self.create_button.collidepoint(mouse_pos):
                     self.show_create_account = True
+                    self.email_text = ""
+                    self.username_text = ""
+                    self.password_text = ""
+                    self.confirm_password_text = ""
+                    self.active_field = None
             else:
-                # Form screen buttons
-                if self.back_button_x.collidepoint(mouse_pos):
-                    self.show_login_form = False
-                    self.show_create_account = False
-                    self.show_forgot_password = False
+                if self.back_button.collidepoint(mouse_pos):
                     self.reset_state()
                 elif self.submit_button.collidepoint(mouse_pos):
                     if self.show_login_form:
-                        # Add validation for empty fields
-                        if not self.email_text or not self.password_text:
-                            print("Please fill in all fields!")
-                            switch_state("Login")
-                            return
-                        
-                        global uid
-                        uid = auth.login(self.email_text, self.password_text)
-                        if uid in ('invalid_credentials', 'unknown_error'):
-                            print("Invalid credentials!")
-                            switch_state("Login")
+                        # Login logic
+                        if "@" not in self.email_text or len(self.password_text) < 6:
+                            self.show_notification_message("Invalid email or password", False)
                         else:
-                            switch_state("MainMenu")
-                            print('Logging in...')
-
+                            try:
+                                result = auth.login(self.email_text, self.password_text)
+                                if result and result != 'invalid_credentials' and result != 'unknown_error':
+                                    switch_state("MainMenu")
+                                else:
+                                    self.show_notification_message("Login failed", False)
+                            except Exception as e:
+                                print("Login error:", e)
+                                self.show_notification_message("Login error", False)
                     elif self.show_create_account:
-                        self.activate_submit_button = auth.register(self.email_text, self.password_text, self.confirm_password_text, self.username_text)
-                        if (self.activate_submit_button == ''):
-                            print('Either invalid e-mail or not matching passwords')
-                        elif (self.activate_submit_button == 'success'):
-                            switch_state("Login")
-                            print('You have successfully registered. Please log in.')
-                        elif (self.activate_submit_button == 'already_registered'):
-                            print('Email already associated with an account. Try again.')
-                        else:
-                            print('Registration failed for unknown reasons.')
-
+                        # Create account logic
+                        if not self._validate_create_account():
+                            return
+                        try:
+                            result = auth.register(
+                                self.email_text,
+                                self.password_text,
+                                self.confirm_password_text,
+                                self.username_text
+                            )
+                            if result == 'success':
+                                self.show_notification_message("Account created! Please login.", True)
+                                self.show_create_account = False
+                                self.show_login_form = True
+                            elif result == 'already_registered':
+                                self.show_notification_message("Email already registered", False)
+                            else:
+                                self.show_notification_message("Account creation failed", False)
+                        except Exception as e:
+                            print("Create account error:", e)
+                            self.show_notification_message("Account creation error", False)
                     elif self.show_forgot_password:
-                        self.reset_password_status = auth.reset_password(self.email_text)
-                        if (self.reset_password_status == 'reset_email_sent'):
-                            print('Reset email sent.')
-                            self.show_forgot_password = False
-                            self.show_login_form = True
-                            switch_state("Login")
-                        else:
-                            print('That address is either invalid, not a verified primary email or is not associated with a personal user account.')
-                
-                # Field selection
-                if self.show_login_form:
-                    self.active_field = "login_email" if self.login_email_rect.collidepoint(mouse_pos) else \
-                                      "login_password" if self.login_password_rect.collidepoint(mouse_pos) else None
-                    # Check if forgot password was clicked
-                    if self.forgot_password_rect.collidepoint(mouse_pos):
+                        # Forgot password logic
+                        if not self.email_text or '@' not in self.email_text:
+                            self.show_notification_message("Enter a valid email", False)
+                            return
+                        try:
+                            result = auth.reset_password(self.email_text)
+                            if result == 'reset_email_sent':
+                                self.show_notification_message("Reset email sent!", True)
+                            else:
+                                self.show_notification_message("Reset failed", False)
+                        except Exception as e:
+                            print("Reset password error:", e)
+                            self.show_notification_message("Reset error", False)
+                # Field selection for create account
+                if self.show_create_account:
+                    if self.email_rect.collidepoint(mouse_pos):
+                        self.active_field = "email"
+                    elif self.username_rect.collidepoint(mouse_pos):
+                        self.active_field = "username"
+                    elif self.password_rect.collidepoint(mouse_pos):
+                        self.active_field = "password"
+                    elif self.confirm_password_rect.collidepoint(mouse_pos):
+                        self.active_field = "confirm_password"
+                    else:
+                        self.active_field = None
+                # Field selection for login
+                elif self.show_login_form:
+                    if self.login_email_rect.collidepoint(mouse_pos):
+                        self.active_field = "login_email"
+                    elif self.login_password_rect.collidepoint(mouse_pos):
+                        self.active_field = "login_password"
+                    # Forgot password link
+                    elif pygame.Rect(self.forgot_password_pos, (self.small_font.size("Forgot Password?")[0], self.small_font.get_height())).collidepoint(mouse_pos):
                         self.show_login_form = False
+                        self.show_create_account = False
                         self.show_forgot_password = True
-                elif self.show_create_account:
-                    self.active_field = "email" if self.email_rect.collidepoint(mouse_pos) else \
-                                      "username" if self.username_rect.collidepoint(mouse_pos) else \
-                                      "password" if self.password_rect.collidepoint(mouse_pos) else \
-                                      "confirm_password" if self.confirm_password_rect.collidepoint(mouse_pos) else None
+                        self.active_field = "forgot_email"
+                    else:
+                        self.active_field = None
+                # Field selection for forgot password
                 elif self.show_forgot_password:
-                    self.active_field = "forgot_email" if self.forgot_email_rect.collidepoint(mouse_pos) else None
-        
-        # Handle text input
-        if event.type == pygame.KEYDOWN and (self.show_login_form or self.show_create_account or self.show_forgot_password):
-            if self.active_field == "login_email":
+                    if self.forgot_email_rect.collidepoint(mouse_pos):
+                        self.active_field = "forgot_email"
+                    else:
+                        self.active_field = None
+
+        elif event.type == pygame.KEYDOWN:
+            if self.active_field == "login_email" or self.active_field == "email" or self.active_field == "forgot_email":
                 if event.key == pygame.K_BACKSPACE:
                     self.email_text = self.email_text[:-1]
                 else:
                     self.email_text += event.unicode
-            elif self.active_field == "login_password":
+            elif self.active_field == "login_password" or self.active_field == "password":
                 if event.key == pygame.K_BACKSPACE:
                     self.password_text = self.password_text[:-1]
                 else:
                     self.password_text += event.unicode
-            elif self.active_field == "email":
-                if event.key == pygame.K_BACKSPACE:
-                    self.email_text = self.email_text[:-1]
-                else:
-                    self.email_text += event.unicode
             elif self.active_field == "username":
                 if event.key == pygame.K_BACKSPACE:
                     self.username_text = self.username_text[:-1]
                 else:
                     self.username_text += event.unicode
-            elif self.active_field == "password":
-                if event.key == pygame.K_BACKSPACE:
-                    self.password_text = self.password_text[:-1]
-                else:
-                    self.password_text += event.unicode
             elif self.active_field == "confirm_password":
                 if event.key == pygame.K_BACKSPACE:
                     self.confirm_password_text = self.confirm_password_text[:-1]
                 else:
                     self.confirm_password_text += event.unicode
-            elif self.active_field == "forgot_email":
-                if event.key == pygame.K_BACKSPACE:
-                    self.email_text = self.email_text[:-1]
-                else:
-                    self.email_text += event.unicode
 
-    def update(self):
-        # Define rectangles for text fields
-        field_width = 200
-        field_x = 250
-        
-        # Login form fields
-        self.login_email_rect = pygame.Rect(field_x, 242.5, field_width, 32)
-        self.login_password_rect = pygame.Rect(field_x, 292.5, field_width, 32)
-        
-        # Create account form fields
-        self.email_rect = pygame.Rect(field_x, 242.5, field_width, 32)
-        self.username_rect = pygame.Rect(field_x, 292.5, field_width, 32)
-        self.password_rect = pygame.Rect(field_x, 342.5, field_width, 32)
-        self.confirm_password_rect = pygame.Rect(field_x, 392.5, field_width, 32)
-        
-        # Forgot password field
-        self.forgot_email_rect = pygame.Rect(field_x, 292.5, field_width, 32)
-        
-        # Forgot password text rect
-        forgot_text = self.font.render("Forgot Password?", True, (100, 150, 255))
-        self.forgot_password_rect = forgot_text.get_rect(center=(250, 350))
+    def reset_state(self):
+        """Reset all form states"""
+        self.show_login_form = False
+        self.show_create_account = False
+        self.show_forgot_password = False
+        self.email_text = ""
+        self.password_text = ""
+        self.active_field = None
+        self.show_notification = False
+
+    def show_notification_message(self, message, is_success):
+        """Show a notification message"""
+        self.notification_text = message
+        self.notification_color = (0, 200, 0) if is_success else (200, 0, 0)
+        self.show_notification = True
+        self.notification_timer = pygame.time.get_ticks()
 
     def draw(self, screen):
+        """Main draw method"""
         self.menu_logo.draw(screen)
-        
-        if not (self.show_login_form or self.show_create_account or self.show_forgot_password):
-            # Draw main login screen
+
+        if not (self.show_login_form or self.show_create_account):
+            # Main menu buttons
             screen.blit(self.resources['login_button_img'], self.login_button)
             screen.blit(self.resources['create_button_img'], self.create_button)
         else:
-            # Draw semi-transparent overlay
+            # Form overlay and back button
             screen.blit(self.overlay, (0, 0))
+            screen.blit(self.resources['back_button_img'], self.back_button)
             
-            # Draw back button
-            screen.blit(self.resources['back_button_img'], self.back_button_x)
+            # Notification
+            if self.show_notification:
+                self._draw_notification(screen)
             
+            # Current form
             if self.show_login_form:
-                # Draw login form
-                title = self.font.render("Login to Your Account", True, (255, 255, 255))
-                screen.blit(title, (250 - title.get_width()//2, 180))
-                
-                # Labels
-                email_label = self.font.render("Email:", True, (255, 255, 255))
-                password_label = self.font.render("Password:", True, (255, 255, 255))
-                screen.blit(email_label, (50, 250))
-                screen.blit(password_label, (50, 300))
-                
-                # Input fields
-                pygame.draw.rect(screen, (255, 255, 255) if self.active_field == "login_email" else (200, 200, 200), 
-                                self.login_email_rect, 2)
-                pygame.draw.rect(screen, (255, 255, 255) if self.active_field == "login_password" else (200, 200, 200), 
-                                self.login_password_rect, 2)
-                
-                # Text
-                email_surface = self.font.render(self.email_text, True, (255, 255, 255))
-                password_surface = self.font.render("*" * len(self.password_text), True, (255, 255, 255))
-                screen.blit(email_surface, (self.login_email_rect.x + 5, self.login_email_rect.y + 5))
-                screen.blit(password_surface, (self.login_password_rect.x + 5, self.login_password_rect.y + 5))
-                
-                # Forgot password text
-                forgot_text = self.small_font.render("Forgot Password?", True, (100, 150, 255))
-                screen.blit(forgot_text, (250 - forgot_text.get_width()//2, 350))
-                # Underline
-                pygame.draw.line(screen, (100, 150, 255), 
-                               (self.forgot_password_rect.left, self.forgot_password_rect.bottom),
-                               (self.forgot_password_rect.right, self.forgot_password_rect.bottom), 1)
-                
-                # Submit button
-                screen.blit(self.resources['login_button_img'], self.submit_button)
-                
+                self._draw_login_form(screen)
             elif self.show_create_account:
-                # Draw create account form
-                title = self.font.render("Create New Account", True, (255, 255, 255))
-                screen.blit(title, (250 - title.get_width()//2, 180))
-                
-                # Labels
-                email_label = self.font.render("Email:", True, (255, 255, 255))
-                username_label = self.font.render("Username:", True, (255, 255, 255))
-                password_label = self.font.render("Password:", True, (255, 255, 255))
-                confirm_label = self.font.render("Confirm Password:", True, (255, 255, 255))
-                
-                screen.blit(email_label, (50, 250))
-                screen.blit(username_label, (50, 300))
-                screen.blit(password_label, (50, 350))
-                screen.blit(confirm_label, (50, 400))
-                
-                # Input fields
-                pygame.draw.rect(screen, (255, 255, 255) if self.active_field == "email" else (200, 200, 200), 
-                                self.email_rect, 2)
-                pygame.draw.rect(screen, (255, 255, 255) if self.active_field == "username" else (200, 200, 200), 
-                                self.username_rect, 2)
-                pygame.draw.rect(screen, (255, 255, 255) if self.active_field == "password" else (200, 200, 200), 
-                                self.password_rect, 2)
-                pygame.draw.rect(screen, (255, 255, 255) if self.active_field == "confirm_password" else (200, 200, 200), 
-                                self.confirm_password_rect, 2)
-                
-                # Text
-                email_surface = self.font.render(self.email_text, True, (255, 255, 255))
-                username_surface = self.font.render(self.username_text, True, (255, 255, 255))
-                password_surface = self.font.render("*" * len(self.password_text), True, (255, 255, 255))
-                confirm_surface = self.font.render("*" * len(self.confirm_password_text), True, (255, 255, 255))
-                
-                screen.blit(email_surface, (self.email_rect.x + 5, self.email_rect.y + 5))
-                screen.blit(username_surface, (self.username_rect.x + 5, self.username_rect.y + 5))
-                screen.blit(password_surface, (self.password_rect.x + 5, self.password_rect.y + 5))
-                screen.blit(confirm_surface, (self.confirm_password_rect.x + 5, self.confirm_password_rect.y + 5))
-                
-                # Submit button
-                screen.blit(self.resources['create_button_img'], self.submit_button)
-                
-            elif self.show_forgot_password:
-                # Draw forgot password form
-                title = self.font.render("Reset Password", True, (255, 255, 255))
-                screen.blit(title, (250 - title.get_width()//2, 180))
-                
-                instructions = self.small_font.render("Enter your email to receive a reset link", True, (255, 255, 255))
-                screen.blit(instructions, (250 - instructions.get_width()//2, 230))
-                
-                # Label
-                email_label = self.font.render("Email:", True, (255, 255, 255))
-                screen.blit(email_label, (50, 300))
-                
-                # Input field
-                pygame.draw.rect(screen, (255, 255, 255) if self.active_field == "forgot_email" else (200, 200, 200), 
-                                self.forgot_email_rect, 2)
-                
-                # Text
-                email_surface = self.font.render(self.email_text, True, (255, 255, 255))
-                screen.blit(email_surface, (self.forgot_email_rect.x + 5, self.forgot_email_rect.y + 5))
-                
-                # Only show the submit button (no login button)
-                submit_text = self.font.render("Send Reset Link", True, (255, 255, 255))
-                screen.blit(submit_text, (self.submit_button.x + 20, self.submit_button.y + 10))
+                self._draw_create_account_form(screen)
 
+    def update(self):
+        """Update animations/timers"""
+        pass
+
+    def draw(self, screen):
+        self.menu_logo.draw(screen)
+
+        if not (self.show_login_form or self.show_create_account or self.show_forgot_password):
+            # Main menu buttons
+            screen.blit(self.resources['login_button_img'], self.login_button)
+            screen.blit(self.resources['create_button_img'], self.create_button)
+        else:
+            # Form overlay and back button
+            screen.blit(self.overlay, (0, 0))
+            screen.blit(self.resources['back_button_img'], self.back_button)
+            
+            # Notification (drawn first so it appears behind form title)
+            if self.show_notification:
+                self._draw_notification(screen)
+                
+            # Draw the appropriate form
+            if self.show_login_form:
+                self._draw_login_form(screen)
+            elif self.show_create_account:
+                self._draw_create_account_form(screen)
+            elif self.show_forgot_password:
+                self._draw_forgot_password_form(screen)
+
+    def _draw_login_form(self, screen):
+        """Draw login form with perfectly aligned elements"""
+        # Title (centered)
+        title = self.font.render("Login to Your Account", True, (255, 255, 255))
+        screen.blit(title, (250 - title.get_width()//2, self.title_y))
+        
+        # Email field
+        screen.blit(self.font.render("Email:", True, (255, 255, 255)), 
+                   (self.label_x, self.login_email_label_y))
+        pygame.draw.rect(screen, (255, 255, 255) if self.active_field == "login_email" else (200, 200, 200), 
+                        self.login_email_rect, 2)
+        email_surface = self._render_text_with_clipping(self.email_text, self.login_email_rect)
+        screen.blit(email_surface, (self.login_email_rect.x + 5, self.login_email_rect.y + 5))
+        
+        # Password field
+        screen.blit(self.font.render("Password:", True, (255, 255, 255)), 
+                   (self.label_x, self.login_password_label_y))
+        pygame.draw.rect(screen, (255, 255, 255) if self.active_field == "login_password" else (200, 200, 200), 
+                        self.login_password_rect, 2)
+        password_surface = self._render_text_with_clipping("*" * len(self.password_text), self.login_password_rect)
+        screen.blit(password_surface, (self.login_password_rect.x + 5, self.login_password_rect.y + 5))
+        
+        # Forgot password link (centered)
+        forgot_text = self.small_font.render("Forgot Password?", True, (100, 150, 255))
+        screen.blit(forgot_text, self.forgot_password_pos)
+        
+        # Submit button
+        screen.blit(self.resources['login_button_img'], self.submit_button)
+
+    def _draw_create_account_form(self, screen):
+        """Draw the create account form with perfectly aligned elements and invisible button text"""
+        # Positioning constants
+        TITLE_Y = 180
+        FIRST_FIELD_Y = 230
+        LABEL_X = 50
+        LABEL_FIELD_SPACING = 35  # New: Space between label and field
+        FIELD_X = LABEL_X + 150 + LABEL_FIELD_SPACING  # Adjusted field position
+        FIELD_WIDTH = 200
+        FIELD_HEIGHT = 32
+        VERTICAL_SPACING = 50
+    
+        
+        # Draw title (centered)
+        title = self.font.render("Create New Account", True, (255, 255, 255))
+        screen.blit(title, (250 - title.get_width()//2, TITLE_Y))
+
+        # Field definitions
+        fields = [
+            ("Email:", self.email_rect, "email", self.email_text),
+            ("Username:", self.username_rect, "username", self.username_text),
+            ("Password:", self.password_rect, "password", "*" * len(self.password_text)),
+            ("Confirm Password:", self.confirm_password_rect, "confirm_password", "*" * len(self.confirm_password_text))
+        ]
+
+        # Draw all fields and labels
+        for i, (label_text, rect, field_name, field_text) in enumerate(fields):
+            # Calculate y-position
+            field_y = FIRST_FIELD_Y + (i * VERTICAL_SPACING)
+            
+            # Update field rectangle
+            rect.x = FIELD_X
+            rect.y = field_y
+            rect.width = FIELD_WIDTH
+            rect.height = FIELD_HEIGHT
+
+            # Draw label (vertically centered with field text)
+            label = self.font.render(label_text, True, (255, 255, 255))
+            label_y = field_y + (FIELD_HEIGHT - label.get_height()) // 2 + 2  # +2 for visual perfection
+            screen.blit(label, (LABEL_X, label_y))
+
+            # Draw field background
+            pygame.draw.rect(screen, 
+            (255, 255, 255) if self.active_field == field_name else (200, 200, 200), rect, 2)
+
+            # Draw field text with perfect alignment
+            text_surface = self._render_text_with_clipping(field_text, rect)
+            text_y = field_y + (FIELD_HEIGHT - text_surface.get_height()) // 2
+            screen.blit(text_surface, (rect.x + 5, text_y))
+
+        # Draw button WITHOUT any text (completely invisible text)
+        screen.blit(self.resources['create_button_img'], self.submit_button)
+        
+        # Alternative: If you need to keep text coordinates for click detection
+        # but want it invisible, use this instead:
+        """
+        button_text = self.font.render("", True, (0, 0, 0, 0))  # Fully transparent
+        text_x = self.submit_button.x + (self.submit_button.width - button_text.get_width()) // 2
+        text_y = self.submit_button.y + (self.submit_button.height - button_text.get_height()) // 2
+        screen.blit(button_text, (text_x, text_y))
+        """
+    
+    def _draw_forgot_password_form(self, screen):
+        """Draw forgot password form with perfectly aligned elements"""
+        # Title (centered)
+        title = self.font.render("Reset Password", True, (255, 255, 255))
+        screen.blit(title, (250 - title.get_width()//2, self.title_y))
+        
+        # Instructions (centered)
+        instructions = self.small_font.render("Enter your email to receive a reset link", True, (255, 255, 255))
+        screen.blit(instructions, (250 - instructions.get_width()//2, self.title_y + 50))
+        
+        # Email field
+        screen.blit(self.font.render("Email:", True, (255, 255, 255)), 
+                   (self.label_x, self.forgot_email_label_y))
+        pygame.draw.rect(screen, (255, 255, 255) if self.active_field == "forgot_email" else (200, 200, 200), 
+                        self.forgot_email_rect, 2)
+        email_surface = self._render_text_with_clipping(self.email_text, self.forgot_email_rect)
+        screen.blit(email_surface, (self.forgot_email_rect.x + 5, self.forgot_email_rect.y + 5))
+        
+        # Submit button with centered text
+        submit_text = self.font.render("Send Reset Link", True, (255, 255, 255))
+        text_x = self.submit_button.x + (self.submit_button.width - submit_text.get_width()) // 2
+        text_y = self.submit_button.y + (self.submit_button.height - submit_text.get_height()) // 2
+        screen.blit(submit_text, (text_x, text_y))
+
+    def _draw_notification(self, screen):
+        """Draw notification popup with perfect positioning"""
+        current_time = pygame.time.get_ticks()
+        elapsed = current_time - self.notification_timer
+        
+        if elapsed >= self.notification_duration:
+            self.show_notification = False
+            return
+            
+        # Calculate fade effect (last 500ms)
+        alpha = min(255, 255 * (1 - max(0, elapsed - (self.notification_duration - 500)) / 500))
+        
+        # Create notification surface
+        notification = pygame.Surface((self.notification_rect.width, self.notification_rect.height), pygame.SRCALPHA)
+        
+        # Background with rounded corners
+        pygame.draw.rect(notification, (*self.notification_color, alpha), 
+                        (0, 0, self.notification_rect.width, self.notification_rect.height),
+                        border_radius=8)
+        pygame.draw.rect(notification, (255, 255, 255, alpha),
+                        (0, 0, self.notification_rect.width, self.notification_rect.height),
+                        2, border_radius=8)
+        
+        # Text (centered)
+        text = self.font.render(self.notification_text, True, (255, 255, 255, alpha))
+        text_rect = text.get_rect(center=(self.notification_rect.width//2, self.notification_rect.height//2))
+        notification.blit(text, text_rect)
+        
+        screen.blit(notification, self.notification_rect)
+
+    def _render_text_with_clipping(self, text, rect):
+        """Render text with perfect alignment and right-side clipping"""
+        text_surface = self.font.render(text, True, (255, 255, 255))
+        if text_surface.get_width() <= rect.width - 10:
+            return text_surface
+        
+        # Create clipped surface showing rightmost portion of text
+        clipped = pygame.Surface((rect.width - 10, rect.height - 5), pygame.SRCALPHA)
+        clipped.blit(text_surface, (rect.width - 10 - text_surface.get_width(), 0))
+        return clipped
+
+    def _validate_create_account(self):
+        """Validate form inputs with specific error messages"""
+        if not self.email_text or '@' not in self.email_text:
+            self.show_notification_message("Invalid email format", False)
+            return False
+            
+        if len(self.password_text) < 6:
+            self.show_notification_message("Password too weak (min 6 chars)", False)
+            return False
+            
+        if self.password_text != self.confirm_password_text:
+            self.show_notification_message("Passwords don't match", False)
+            return False
+            
+        return True
 
 class MainMenu:
     def __init__(self, resources, game_instance):
@@ -334,6 +497,7 @@ class MainMenu:
         self.logout_button = resources['logout_button_img'].get_rect(center=(84, 625))
         self.leaderboard_button = resources['leaderboard_button_img'].get_rect(center=(250, 625))
         self.menu_logo = Logo(250, 200, resources['menu_logo_img'])
+        self.font = pygame.font.Font(pygame.font.get_default_font(), 20)
         
 
     def handle_events(self, event, switch_state):
