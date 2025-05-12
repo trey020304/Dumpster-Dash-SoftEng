@@ -1,4 +1,3 @@
-
 # 🎮 Dumpster Dash - Enhanced Edition ♻️
 
 <p align="center">
@@ -53,12 +52,12 @@ Human survival depends as much on land as it does on the ocean. Forests cover 30
 
 ## 🎮 Controls
 
-| Key             | Action                      |
-|------------------|-------------------------------|
-| `Q`             | Throw trash into **Biodegradable Bin** |
-| `E`             | Throw trash into **Non-Biodegradable Bin** |
-| `← (Left Arrow)`  | Move Wally **Left**              |
-| `→ (Right Arrow)` | Move Wally **Right**             |
+| Key               | Action                                     |
+| ----------------- | ------------------------------------------ |
+| `Q`               | Throw trash into **Biodegradable Bin**     |
+| `E`               | Throw trash into **Non-Biodegradable Bin** |
+| `← (Left Arrow)`  | Move Wally **Left**                        |
+| `→ (Right Arrow)` | Move Wally **Right**                       |
 
 ---
 
@@ -66,10 +65,10 @@ Human survival depends as much on land as it does on the ocean. Forests cover 30
 
 ### Features:
 
-- Real-time global rankings  
-- Secure score validation  
-- Personal progress tracking  
-- Daily/weekly challenges  
+- Real-time global rankings
+- Secure score validation
+- Personal progress tracking
+- Daily/weekly challenges
 
 ---
 
@@ -89,7 +88,7 @@ Game flow is divided into three states: `MainMenu` (UI navigation + Firebase log
 
 ---
 
-## 📊 UML Diagram
+## 📊 Class Diagram
 
 <p align="center">
     <img src="https://github.com/trey020304/Dumpster-Dash-SoftEng/blob/main/images/classdiagram.png" width="848"/>
@@ -97,9 +96,11 @@ Game flow is divided into three states: `MainMenu` (UI navigation + Firebase log
 
 ---
 
-## 🎥 Dumpster Dash Demo
+## 📊 Sequence Diagram
 
-👉 [Watch the Game Demo on YouTube](https://www.youtube.com/watch?v=JnIWZd-0lYs)
+<p align="center">
+    <img src="https://github.com/trey020304/Dumpster-Dash-SoftEng/blob/main/images/sequencediagram.jpg" width="848"/>
+</p>
 
 ---
 
@@ -111,7 +112,8 @@ Game flow is divided into three states: `MainMenu` (UI navigation + Firebase log
 python -m venv .venv
 ```
 
-### 2. 💡 Switch to the Main Python Interpreter  
+### 2. 💡 Switch to the Main Python Interpreter
+
 Ensure your interpreter is set to the **main Python interpreter**.
 
 ### 3. 📄 Install Initial Dependencies
@@ -153,8 +155,8 @@ pip install -r requirements.txt
 ## 👨‍💻 Development Team
 
 | [<img src="https://github.com/leaurix.png" width="100" alt="Louis Yvan"/>](https://github.com/leaurix) | [<img src="https://github.com/alyssaml.png" width="100" alt="Alessandra"/>](https://github.com/alyssaml) | [<img src="https://github.com/trey020304.png" width="100" alt="Trevor"/>](https://github.com/trey020304) | [<img src="https://github.com/kebinmirabel.png" width="100" alt="Kevin"/>](https://github.com/kebinmirabel) | [<img src="https://github.com/kmatheuu.png" width="100" alt="Karl"/>](https://github.com/kmatheuu) |
-| :---------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------: |
-|     [Louis Yvan](https://github.com/leaurix)     |     [Alessandra](https://github.com/alyssaml)     |     [Trevor](https://github.com/trey020304)     |     [Kevin](https://github.com/kebinmirabel)     |     [Karl](https://github.com/kmatheuu)     |
+| :----------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------: |
+|                                [Louis Yvan](https://github.com/leaurix)                                |                                [Alessandra](https://github.com/alyssaml)                                 |                                 [Trevor](https://github.com/trey020304)                                  |                                  [Kevin](https://github.com/kebinmirabel)                                   |                                [Karl](https://github.com/kmatheuu)                                 |
 
 ---
 
