@@ -114,6 +114,14 @@ class Authorization:
             return 'reset_email_sent'
         except:
             return 'reset_failed'
+        
+    def get_username(uid):
+        doc = db.collection('users').document(uid).get()
+        if doc.exists:
+            return doc.to_dict().get('username')
+        else:
+            return None
+
 
 # ------------------ High Score Handling ------------------ #
 class HighScoreDB:

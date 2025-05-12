@@ -261,8 +261,8 @@ class Login:
                                 self.login_password_rect, 2)
                 
                 # Text
-                email_surface = self.font.render(self.email_text, True, (255, 255, 255))
-                password_surface = self.font.render("*" * len(self.password_text), True, (255, 255, 255))
+                email_surface = self._render_text_with_clipping(self.email_text, self.email_rect)
+                password_surface = self._render_text_with_clipping("*" * len(self.password_text), self.password_rect)
                 screen.blit(email_surface, (self.login_email_rect.x + 5, self.login_email_rect.y + 5))
                 screen.blit(password_surface, (self.login_password_rect.x + 5, self.login_password_rect.y + 5))
                 
@@ -304,10 +304,10 @@ class Login:
                                 self.confirm_password_rect, 2)
                 
                 # Text
-                email_surface = self.font.render(self.email_text, True, (255, 255, 255))
-                username_surface = self.font.render(self.username_text, True, (255, 255, 255))
-                password_surface = self.font.render("*" * len(self.password_text), True, (255, 255, 255))
-                confirm_surface = self.font.render("*" * len(self.confirm_password_text), True, (255, 255, 255))
+                email_surface = self._render_text_with_clipping(self.email_text, self.email_rect)
+                username_surface = self._render_text_with_clipping(self.username_text, self.username_rect)
+                password_surface = self._render_text_with_clipping("*" * len(self.password_text), self.password_rect)
+                confirm_surface = self._render_text_with_clipping("*" * len(self.confirm_password_text), self.confirm_password_rect)
                 
                 screen.blit(email_surface, (self.email_rect.x + 5, self.email_rect.y + 5))
                 screen.blit(username_surface, (self.username_rect.x + 5, self.username_rect.y + 5))
@@ -334,7 +334,7 @@ class Login:
                                 self.forgot_email_rect, 2)
                 
                 # Text
-                email_surface = self.font.render(self.email_text, True, (255, 255, 255))
+                email_surface = self._render_text_with_clipping(self.email_text, self.email_rect)
                 screen.blit(email_surface, (self.forgot_email_rect.x + 5, self.forgot_email_rect.y + 5))
                 
                 # Only show the submit button (no login button)
@@ -378,6 +378,17 @@ class Login:
         notification.blit(text, text_rect)
 
         screen.blit(notification, self.notification_rect)
+
+    def _render_text_with_clipping(self, text, rect):
+        """Render text with perfect alignment and right-side clipping"""
+        text_surface = self.font.render(text, True, (255, 255, 255))
+        if text_surface.get_width() <= rect.width - 10:
+            return text_surface
+        
+        # Create clipped surface showing rightmost portion of text
+        clipped = pygame.Surface((rect.width - 10, rect.height - 5), pygame.SRCALPHA)
+        clipped.blit(text_surface, (rect.width - 10 - text_surface.get_width(), 0))
+        return clipped
 
 
 class MainMenu:
