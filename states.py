@@ -63,8 +63,9 @@ class Login:
         """Initialize all button rects once"""
         self.submit_button = self.resources['create_button_img'].get_rect(center=(250, 600))
         self.back_button_x = self.resources['back_button_img'].get_rect(center=(450, 100))
-        self.login_button = self.resources['login_button_img'].get_rect(center=(380, 575))
-        self.create_button = self.resources['create_button_img'].get_rect(center=(130, 575))
+        self.login_button = self.resources['login_button_img'].get_rect(center=(380, 525))
+        self.create_button = self.resources['create_button_img'].get_rect(center=(130, 525))
+        self.exit_button = self.resources['quit_button_img'].get_rect(center=(250, 625))
 
     def reset_state(self):
         """Reset only the form states, not the buttons"""
@@ -82,7 +83,7 @@ class Login:
         self.overlay.fill((0, 0, 0, 180))  # Black with 180/255 opacity
         
         # Reuse existing buttons for forms
-        self.submit_button = self.resources['create_button_img'].get_rect(center=(250, 600))  # Moved up for forgot password
+        self.submit_button = self.resources['create_button_img'].get_rect(center=(250, 600))
         self.back_button_x = self.resources['back_button_img'].get_rect(center=(450, 100))
 
     def handle_events(self, event, switch_state):
@@ -95,6 +96,10 @@ class Login:
                     self.show_login_form = True
                 elif self.create_button.collidepoint(mouse_pos):
                     self.show_create_account = True
+                elif self.exit_button.collidepoint(mouse_pos):
+                    print("Exit button clicked")
+                    pygame.quit()
+                    sys.exit()
             else:
                 # Form screen buttons
                 if self.back_button_x.collidepoint(mouse_pos):
@@ -233,6 +238,7 @@ class Login:
             # Draw main login screen
             screen.blit(self.resources['login_button_img'], self.login_button)
             screen.blit(self.resources['create_button_img'], self.create_button)
+            screen.blit(self.resources['quit_button_img'], self.exit_button)
         else:
             # Draw semi-transparent overlay
             screen.blit(self.overlay, (0, 0))
@@ -402,10 +408,33 @@ class MainMenu:
         self.exit_button = resources['quit_button_img'].get_rect(center=(416, 625))
         self.logout_button = resources['logout_button_img'].get_rect(center=(84, 625))
         self.leaderboard_button = resources['leaderboard_button_img'].get_rect(center=(250, 625))
+        self.instruction = resources['instruction_img'].get_rect(center=(410, 85))
         self.menu_logo = Logo(250, 200, resources['menu_logo_img'])
+        self.username_font = pygame.font.Font(pygame.font.get_default_font(), 16)  # Smaller font for username
         
+        # Initialize username as None, will be updated when entering state
+        self.username = None
+
+    def on_enter(self, refresh_username=False):
+        """Called when this state becomes active"""
+        if refresh_username:
+            print("Forcing username refresh")
+            self.update_username()
+        elif self.username is None:  # Only update if we don't have a username
+            self.update_username()
+
+    def update_username(self):
+        """Update the username display by fetching from Firebase"""
+        uid = firebase.load_session()
+        if uid:
+            self.username = Authorization.get_username(uid)
+            print(f"Updated username to: {self.username}")  # Debug print
+        else:
+            self.username = None
+            print("No user logged in")  # Debug print
 
     def handle_events(self, event, switch_state):
+        self.on_enter()
         if (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1):
             mouse_pos = event.pos
             
@@ -421,6 +450,7 @@ class MainMenu:
             elif self.logout_button.collidepoint(mouse_pos):
                 auth.logout()
                 print("Logout button clicked")
+                self.username = None  # Clear username on logout
                 switch_state("Login", reset_login=True)
             elif self.exit_button.collidepoint(mouse_pos):
                 print("Exit button clicked")
@@ -438,6 +468,12 @@ class MainMenu:
         screen.blit(self.resources['quit_button_img'], self.exit_button)
         screen.blit(self.resources['logout_button_img'], self.logout_button)
         screen.blit(self.resources['leaderboard_button_img'], self.leaderboard_button)
+        screen.blit(self.resources['instruction_img'], self.instruction)
+        
+        # Draw username greeting if logged in
+        if self.username:
+            greeting = self.username_font.render(f"Hi {self.username}!", True, (255, 255, 255))
+            screen.blit(greeting, (20, 20))  # Top left position
 
 class Leaderboard:
     def __init__(self, resources, game_instance):

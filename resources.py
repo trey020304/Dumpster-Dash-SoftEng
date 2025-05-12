@@ -52,7 +52,10 @@ def load_resources():
     resources['scroll_pos'] = 0
     resources['menu_speed'] = 3
     resources['game_speed'] = 7
-    
+
+    # Load instructions
+    resources['instruction_img'] = load_and_scale('assets/instruction.png', scale_factor=.35)
+
     # Lanes (unchanged)
     resources['left_lane'] = 150
     resources['center_lane'] = 166

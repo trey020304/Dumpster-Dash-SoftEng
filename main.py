@@ -48,7 +48,21 @@ def switch_state(state, reset_login=False):
         # Access the login state through the states dictionary
         states["Login"].reset_state()
     
+    # Call on_exit on current state if it exists
+    if hasattr(states.get(current_state, None), 'on_exit'):
+        states[current_state].on_exit()
+    
+    # Update current state
+    previous_state = current_state
     current_state = state
+    
+    # Call on_enter on new state if it exists
+    if hasattr(states.get(current_state, None), 'on_enter'):
+        # Special case: when coming back to MainMenu from Game/GameOver
+        if current_state == "MainMenu" and previous_state in ("Game", "GameOver"):
+            states[current_state].on_enter(refresh_username=True)
+        else:
+            states[current_state].on_enter()
 
 clock = pygame.time.Clock()
 

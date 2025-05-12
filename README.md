@@ -99,7 +99,7 @@ Game flow is divided into three states: `MainMenu` (UI navigation + Firebase log
 ## 📊 Sequence Diagram
 
 <p align="center">
-    <img src="https://github.com/trey020304/Dumpster-Dash-SoftEng/blob/main/images/sequencediagram.jpg" width="848"/>
+    <img src="https://github.com/trey020304/Dumpster-Dash-SoftEng/blob/main/images/sequencediagram.png" width="848"/>
 </p>
 
 ---

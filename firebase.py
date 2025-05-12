@@ -57,6 +57,7 @@ def load_session():
 # ------------------ Authorization ------------------ #
 class Authorization:
 
+    
     def register(email, password, confirm_password, username):
         # Email format validation
         if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
