@@ -15,16 +15,16 @@ class Garbage(pygame.sprite.Sprite):
         return [pygame.image.load('assets/obstacles/' + fn) for fn in filenames]
 
 class BioGarbage(Garbage):
-    filenames = ['banana peel.png', 'milk carton.png', 'box.png', 'Leaves.png', 'Poop.png', 
-                'Log.png', 'Book.png', 'Apple.png', 'Meat.png', 'Fishbone.png']
+    filenames = ['banana.png', 'milk carton.png', 'box.png', 'leaf.png', 'poop.png', 
+                'log.png', 'book.png', 'apple.png', 'meat.png', 'fish bone.png']
     
     @classmethod
     def get_images(cls):
         return cls.load_images(cls.filenames)
 
 class NonBioGarbage(Garbage):
-    filenames = ['plastic bag.png', 'soda bottle.png', 'water bottle.png', 'Battery.png', 
-                'Lightbulb.png', 'Phone.png', 'Laptop.png', 'Can.png', 'Soda.png', 'Glass.png']
+    filenames = ['plastic bag.png', 'coke.png', 'bottle.png', 'battery.png', 
+                'light bulb.png', 'phone.png', 'laptop.png', 'can.png', 'soda.png', 'flask.png']
     
     @classmethod
     def get_images(cls):
