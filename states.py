@@ -68,8 +68,9 @@ class Login:
         """Initialize all button rectangles"""
         self.submit_button = pygame.Rect(150, 450, 200, 40)
         self.back_button = self.resources['back_button_img'].get_rect(center=(450, 100))
-        self.login_button = self.resources['login_button_img'].get_rect(center=(380, 575))
-        self.create_button = self.resources['create_button_img'].get_rect(center=(130, 575))
+        self.login_button = self.resources['login_button_img'].get_rect(center=(380, 525))
+        self.create_button = self.resources['create_button_img'].get_rect(center=(130, 525))
+        self.exit_button = self.resources['quit_button_img'].get_rect(center=(250, 625))
 
     def _init_field_rects(self):
         """Initialize field rectangles with positions"""
@@ -136,6 +137,10 @@ class Login:
                     self.password_text = ""
                     self.confirm_password_text = ""
                     self.active_field = None
+                elif self.exit_button.collidepoint(mouse_pos):  # Add this condition
+                    print("Exit button clicked")
+                    pygame.quit()
+                    sys.exit()
             else:
                 if self.back_button.collidepoint(mouse_pos):
                     self.reset_state()
@@ -296,6 +301,7 @@ class Login:
             # Main menu buttons
             screen.blit(self.resources['login_button_img'], self.login_button)
             screen.blit(self.resources['create_button_img'], self.create_button)
+            screen.blit(self.resources['quit_button_img'], self.exit_button)
         else:
             # Form overlay and back button
             screen.blit(self.overlay, (0, 0))
@@ -750,6 +756,7 @@ class Game:
 class GameOver:
     def __init__(self, resources, game_instance):
         self.resources = resources
+        self.highest_score = current_player_HS.getCurrentPlayerHighScore(uid) or 0  # Default to 0 if None
         self.game = game_instance
         self.restart_button = resources['restart_button_img'].get_rect(center=(250, 500))
         self.menu_button = resources['menu_button_img'].get_rect(center=(250, 600))
