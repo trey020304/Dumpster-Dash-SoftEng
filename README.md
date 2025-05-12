@@ -1,99 +1,143 @@
-
 # 🎮 Dumpster Dash - Enhanced Edition ♻️
 
 <p align="center">
-    <img src="https://github.com/trey020304/Dumpster-Dash-SoftEng/blob/main/assets/icons/menu_logo.png" width=512px height=512px/>
+  <img src="https://github.com/trey020304/Dumpster-Dash-SoftEng/blob/main/assets/icons/menu_logo.png" width="256" height="256"/>
 </p>
 
 ---
 
-
 ## ♻️ Significance of the Game ♻️
 
-<img src="https://github.com/trey020304/test-repository/blob/main/images/E-WEB-Goal-12.png" align=left width=212px/>
+<table>
+  <tr>
+    <td width="25%">
+      <img src="https://github.com/trey020304/test-repository/blob/main/images/E-WEB-Goal-12.png" width="100%"/>
+    </td>
+    <td>
+      <p align="justify">
+        According to the 12th goal under the Sustainable Development Goals, it involves establishing sustainable production and consumption habits. These are essential to maintaining the standard of living for both present and future generations. Dumpster Dash contributes by raising awareness about sustainability and the importance of correct waste segregation. Since the majority of people play video games, this game can help spread awareness to almost all age groups.
+      </p>
+    </td>
+  </tr>
+</table>
 
-<p align="justify">
-According to the 12th goal under the Sustainable Development Goals, it involves establishing sustainable production and consumption habits, which are essential to maintaining the standard of living for both the present and future generations. It calls for more effective and environmentally responsible management of materials throughout their whole lifecycle, from manufacture to disposal. With DumpsterDash's existence, this would not only serve as a fun application but would also raise awareness of the status of our world today in terms of how sustainability and correct segregation of waste is being handled. Since the majority of people play video games on their devices, this game would be helpful in spreading awareness of the 12th Sustainable Development Goal as it would be accessible to practically all age groups and almost anyone with a gadget would be able to play this game!
-</p>
-
-<img src="https://github.com/trey020304/Dumpster-Dash/blob/main/images/E_SDG-goals_icons-individual-rgb-15-500x500.jpg" align=left width=212px/>
-
-<p align="justify">
-For our food and means of subsistence, human existence depends just as much on the ground as it does the ocean. Eighty percent of the human diet is made up of plants, and agriculture is a significant source of income for us. Providing habitat for millions of species, significant sources of clean air and water, and being essential for preventing climate change, forests encompass 30% of the Earth's surface. And trash, or improper rubbish segregation, is one of the elements that ruins animal habitats. Because when we scatter our rubbish around, some little creatures end up eating it and becoming ill or occasionally even perish. Our program is in line with this objective since we want to educate people about the value of segregation and how to accomplish it, as well as the effects that waste we simply put into the environment can have.
-</p>
+<table>
+  <tr>
+    <td width="25%">
+      <img src="https://github.com/trey020304/Dumpster-Dash/blob/main/images/E_SDG-goals_icons-individual-rgb-15-500x500.jpg" width="100%"/>
+    </td>
+    <td>
+      <p align="justify">
+        Human life depends on both the land and ocean. Plants make up 80% of our diet, and forests cover 30% of Earth’s surface, playing a crucial role in climate regulation and biodiversity. Improper waste disposal threatens these ecosystems. Dumpster Dash aims to educate players about the impact of littering and the importance of proper segregation.
+      </p>
+    </td>
+  </tr>
+</table>
 
 ---
 
 ## 🎮 Game Concept & Early Development
 
 ### Early Design Phase
+
 <p align="center">
-    <img src="https://github.com/trey020304/Dumpster-Dash/blob/main/images/341477161_1250051515632988_5368769938844971349_n.jpg" width=212px/>
-    <img src="https://github.com/trey020304/Dumpster-Dash/blob/main/images/346149733_1056012145373168_2721184389200773529_n.jpg" width=212px/>
+  <img src="https://github.com/trey020304/Dumpster-Dash/blob/main/images/341477161_1250051515632988_5368769938844971349_n.jpg" width="212"/>
+  <img src="https://github.com/trey020304/Dumpster-Dash/blob/main/images/346149733_1056012145373168_2721184389200773529_n.jpg" width="212"/>
 </p>
 <p align="center">Initial character sketches of Wally Waste</p>
 
 ### Prototype Evolution
+
 <p align="center">
-    <img src="https://github.com/trey020304/Dumpster-Dash/blob/main/images/346134559_808486404179534_5777925480861872611_n.png" width=424px/>
+  <img src="https://github.com/trey020304/Dumpster-Dash/blob/main/images/346134559_808486404179534_5777925480861872611_n.png" width="424"/>
 </p>
 <p align="center">First background concept for DumpVania</p>
 
 ### Animation Development
+
 <p align="center">
-    <img src="https://github.com/trey020304/Dumpster-Dash/blob/main/images/335428268_1526468007762830_3256599577823479950_n.png" width=212px/>
-    <img src="https://github.com/trey020304/Dumpster-Dash/blob/main/images/349222251_118642044568040_6257362520514358034_n.gif" width=212px/>         
-    <img src="https://github.com/trey020304/Dumpster-Dash/blob/main/images/348901030_1296695137890699_4411804075523543893_n.png" width=212px/>
+  <img src="https://github.com/trey020304/Dumpster-Dash/blob/main/images/335428268_1526468007762830_3256599577823479950_n.png" width="212"/>
+  <img src="https://github.com/trey020304/Dumpster-Dash/blob/main/images/349222251_118642044568040_6257362520514358034_n.gif" width="212"/>
+  <img src="https://github.com/trey020304/Dumpster-Dash/blob/main/images/348901030_1296695137890699_4411804075523543893_n.png" width="212"/>
 </p>
 <p align="center">Wally's animation progression from sketch to sprite</p>
 
 ---
 
 ## 🔥 Firebase-Powered Leaderboard
-### Features:
-- Real-time global rankings
-- Secure score validation
-- Personal progress tracking
-- Daily/weekly challenges
+
+### Features
+
+- ✅ Real-time global rankings
+- 🔐 Secure score validation
+- 📊 Personal progress tracking
+- 🗓️ Daily/weekly challenges
 
 ---
 
-
-
-## Overview of Dumpster Dash and the Program
+## 📘 Game Overview
 
 <p align="justify">
-Dumpster Dash is a 2D side-scrolling game built with Python and Pygame where players control Wally Waste, sorting trash into correct bins (biodegradable/non-biodegradable) while running through DumpVania. The enhanced version includes Firebase integration for global leaderboards and real-time score tracking.
+Dumpster Dash is a 2D side-scrolling game built with Python and Pygame. Players control Wally Waste, sorting trash into biodegradable and non-biodegradable bins while navigating the world of DumpVania.
 </p>
 
 <p align="justify">
-The game implements several core classes: The "Runner" class handles Wally's movement and animations, while "Bio" and "NonBio" variants manage the different bin mechanics. For trash objects, specialized "Garbage", "BioGarbage", and "NonBioGarbage" classes control spawning behavior with randomized lane and type selection.
+The game features several core classes: the <code>Runner</code> class handles Wally's movement, while <code>Bio</code> and <code>NonBio</code> manage bin mechanics. Specialized garbage classes manage object spawning and classification.
 </p>
 
 <p align="justify">
-Game flow is managed through three main states: The "MainMenu" state handles UI navigation and Firebase authentication, the "Game" state processes core gameplay with automatic score submission, and the "GameOver" state displays both personal bests and global leaderboards. The game loop efficiently handles input processing, collision detection, and background scrolling while maintaining seamless Firebase connectivity.
+The game operates across three main states: <code>MainMenu</code> (UI and Firebase login), <code>Game</code> (real-time play and score tracking), and <code>GameOver</code> (leaderboards). Firebase ensures seamless score syncing and authentication.
 </p>
 
 ---
 
-## UML Diagram of Dumpster Dash
+## 🧱 UML Diagram
 
 <p align="center">
-    <img src="https://github.com/trey020304/Dumpster-Dash-SoftEng/blob/main/images/classdiagram.png" width=848px/>
+  <img src="https://github.com/trey020304/Dumpster-Dash-SoftEng/blob/main/images/classdiagram.png" width="848"/>
 </p>
 
 ---
 
-## Dumpster Dash Demo
+## 🎬 Dumpster Dash Demo
 
-- <a href="https://www.youtube.com/watch?v=JnIWZd-0lYs">Game Demo</a>
+▶️ [Watch the Game Demo](https://www.youtube.com/watch?v=JnIWZd-0lYs)
+
+---
+
+## 🔧 Installation Guide
+
+<p>Follow these steps to set up the project locally:</p>
+
+<h4>1. 📦 Create a Virtual Environment</h4>
+<pre><code>python -m venv .venv</code></pre>
+
+<h4>2. 💡 Switch to the Main Python Interpreter</h4>
+<p>Make sure your interpreter is set to your global/main Python installation.</p>
+
+<h4>3. 📄 Install Initial Dependencies</h4>
+<pre><code>pip install -r requirements.txt</code></pre>
+<p><strong>⚠️ This may update your <code>requirements.txt</code> based on the environment.</strong></p>
+
+<h4>4. 🚀 Activate the Virtual Environment</h4>
+<p><strong>On Windows:</strong></p>
+<pre><code>.venv\Scripts\activate</code></pre>
+<p><strong>On macOS/Linux:</strong></p>
+<pre><code>source .venv/bin/activate</code></pre>
+
+<h4>5. 🧰 Install setuptools (Inside Virtual Environment)</h4>
+<pre><code>python -m pip install setuptools</code></pre>
+
+<h4>6. 📥 Finalize Dependency Installation</h4>
+<pre><code>pip install -r requirements.txt</code></pre>
+
 ---
 
 ## 👨‍💻 Development Team
 
-| [<img src="https://github.com/leaurix.png" width=100px alt="Louis Yvan"/>](https://github.com/leaurix) | [<img src="https://github.com/alyssaml.png" width=100px alt="Alessandra"/>](https://github.com/alyssaml) | [<img src="https://github.com/trey020304.png" width=100px alt="Trevor"/>](https://github.com/trey020304) | [<img src="https://github.com/kebinmirabel.png" width=100px alt="Kevin"/>](https://github.com/kebinmirabel) | [<img src="https://github.com/kmatheuu.png" width=100px alt="Karl"/>](https://github.com/kmatheuu) |
-|:---:|:---:|:---:|:---:|:---:|
-| [Louis Yvan](https://github.com/leaurix) | [Alessandra](https://github.com/alyssaml) | [Trevor](https://github.com/trey020304) | [Kevin](https://github.com/kebinmirabel) | [Karl](https://github.com/kmatheuu) |
+| [<img src="https://github.com/leaurix.png" width="100" alt="Louis Yvan"/>](https://github.com/leaurix) | [<img src="https://github.com/alyssaml.png" width="100" alt="Alessandra"/>](https://github.com/alyssaml) | [<img src="https://github.com/trey020304.png" width="100" alt="Trevor"/>](https://github.com/trey020304) | [<img src="https://github.com/kebinmirabel.png" width="100" alt="Kevin"/>](https://github.com/kebinmirabel) | [<img src="https://github.com/kmatheuu.png" width="100" alt="Karl"/>](https://github.com/kmatheuu) |
+| :----------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------: |
+|                                [Louis Yvan](https://github.com/leaurix)                                |                                [Alessandra](https://github.com/alyssaml)                                 |                                 [Trevor](https://github.com/trey020304)                                  |                                  [Kevin](https://github.com/kebinmirabel)                                   |                                [Karl](https://github.com/kmatheuu)                                 |
 
 ---
 
