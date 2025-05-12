@@ -154,10 +154,32 @@ pip install -r requirements.txt
 
 ## 👨‍💻 Development Team
 
-| [<img src="https://github.com/leaurix.png" width="100" alt="Louis Yvan"/>](https://github.com/leaurix) | [<img src="https://github.com/alyssaml.png" width="100" alt="Alessandra"/>](https://github.com/alyssaml) | [<img src="https://github.com/trey020304.png" width="100" alt="Trevor"/>](https://github.com/trey020304) | [<img src="https://github.com/kebinmirabel.png" width="100" alt="Kevin"/>](https://github.com/kebinmirabel) | [<img src="https://github.com/kmatheuu.png" width="100" alt="Karl"/>](https://github.com/kmatheuu) |
-| :----------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------: |
-|                                [Louis Yvan](https://github.com/leaurix)                                |                                [Alessandra](https://github.com/alyssaml)                                 |                                 [Trevor](https://github.com/trey020304)                                  |                                  [Kevin](https://github.com/kebinmirabel)                                   |                                [Karl](https://github.com/kmatheuu)                                 |
+| [<img src="https://github.com/leaurix.png" width="100" alt="Louis Yvan"/>](https://github.com/leaurix) | [<img src="https://github.com/alyssaml.png" width="100" alt="Alessandra"/>](https://github.com/alyssaml) | [<img src="https://github.com/trey020304.png" width="100" alt="Trevor"/>](https://github.com/trey020304) | [<img src="https://github.com/kebinmirabel.png" width="100" alt="Kevin"/>](https://github.com/kebinmirabel) | [<img src="https://github.com/kmatheuu.png" width="100" alt="Karl"/>](https://github.com/kmatheuu) | [<img src="https://github.com/marieemoiselle.png" width="100" alt="Ma'am Fatima"/>](https://github.com/marieemoiselle) |
+| :----------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------: |
+|                                [Louis Yvan](https://github.com/leaurix)                                |                                [Alessandra](https://github.com/alyssaml)                                 |                                 [Trevor](https://github.com/trey020304)                                  |                                  [Kevin](https://github.com/kebinmirabel)                                   |                                [Karl](https://github.com/kmatheuu)                                 |                         [Ma'am Fatima (Course Instructor)](https://github.com/marieemoiselle)                          |
 
 ---
+
+## 🙏 Acknowledgement
+
+<p align="justify">
+We would like to express our profound appreciation to our course instructor, <strong>Ms. Fatima Marie P. Agdon</strong>, for her invaluable advice and assistance throughout the development of Dumpster Dash. Her guidance greatly contributed to the success of this project.
+</p>
+
+<p align="justify">
+We also extend our gratitude to our dedicated team members for their collaborative effort and creative input:
+</p>
+
+<ul>
+    <li>Alcayde, Louis Yvan C.</li>
+    <li>Landicho, Alessandra Marie M.</li>
+    <li>Marcos, Mark Wilhelm Trevor K.</li>
+    <li>Mirabel, Kevin Hans Aurick S.</li>
+    <li>Mojar, Karl Mathew D.</li>
+</ul>
+
+<p align="justify">
+This project has been a valuable experience in teamwork and interdisciplinary collaboration, and we are thankful for the opportunity to learn and grow together.
+</p>
 
 ## 🌍 Play Now & Help Save the Planet! ♻️🚮
