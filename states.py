@@ -44,6 +44,14 @@ class Login:
         self.confirm_password_text = ""
         self.active_field = None
         
+        # Notification system
+        self.notification_text = ""
+        self.notification_timer = 0
+        self.notification_duration = 3000
+        self.notification_color = (0, 255, 0)
+        self.show_notification = False
+        self.notification_rect = pygame.Rect(50, 30, 400, 30)
+        
         # Create overlay
         self.overlay = pygame.Surface((500, 720), pygame.SRCALPHA)
         self.overlay.fill((0, 0, 0, 180))
@@ -99,6 +107,7 @@ class Login:
                         # Add validation for empty fields
                         if not self.email_text or not self.password_text:
                             print("Please fill in all fields!")
+                            self.show_notification_message('Please fill in all fields!', False)
                             switch_state("Login")
                             return
                         
@@ -107,22 +116,30 @@ class Login:
                         if uid in ('invalid_credentials', 'unknown_error'):
                             print("Invalid credentials!")
                             switch_state("Login")
+                            self.show_notification_message('Invalid Credentials', False)
                         else:
                             switch_state("MainMenu")
                             print('Logging in...')
+                            self.show_notification_message('Successful Login', False)
 
                     elif self.show_create_account:
                         self.activate_submit_button = auth.register(self.email_text, self.password_text, self.confirm_password_text, self.username_text)
-                        if (self.activate_submit_button == ''):
+                        if not self.email_text or not self.password_text or not self.confirm_password_text or not self.username_text:
+                            print('Please fill in all fields.')
+                            self.show_notification_message('Please fill in all fields.', False)
+                        elif (self.activate_submit_button == ''):
                             print('Either invalid e-mail or not matching passwords')
+                            self.show_notification_message('Invalid e-mail or unmatching passwords', False)
+                        elif (self.activate_submit_button == 'already_registered'):
+                            print('Email already associated with an account. Try again.')
+                            self.show_notification_message('Email already registered.', False)
                         elif (self.activate_submit_button == 'success'):
                             switch_state("Login")
                             print('You have successfully registered. Please log in.')
-                        elif (self.activate_submit_button == 'already_registered'):
-                            print('Email already associated with an account. Try again.')
+                            self.show_notification_message('Successfully registered. Log in.', True)
                         else:
                             print('Registration failed for unknown reasons.')
-
+                            self.show_notification_message('Registration failed. Try again.', False)
                     elif self.show_forgot_password:
                         self.reset_password_status = auth.reset_password(self.email_text)
                         if (self.reset_password_status == 'reset_email_sent'):
@@ -223,6 +240,9 @@ class Login:
             # Draw back button
             screen.blit(self.resources['back_button_img'], self.back_button_x)
             
+            if self.show_notification:
+                self._draw_notification(screen)
+
             if self.show_login_form:
                 # Draw login form
                 title = self.font.render("Login to Your Account", True, (255, 255, 255))
@@ -320,6 +340,44 @@ class Login:
                 # Only show the submit button (no login button)
                 submit_text = self.font.render("Send Reset Link", True, (255, 255, 255))
                 screen.blit(submit_text, (self.submit_button.x + 20, self.submit_button.y + 10))
+    
+    def show_notification_message(self, message, is_success):
+        """Show a notification message"""
+        self.notification_text = message
+        self.notification_color = (0, 200, 0) if is_success else (200, 0, 0)
+        self.show_notification = True
+        self.notification_timer = pygame.time.get_ticks()
+
+    def _draw_notification(self, screen):
+        """Draw notification popup with perfect positioning"""
+        current_time = pygame.time.get_ticks()
+        elapsed = current_time - self.notification_timer
+
+        if elapsed >= self.notification_duration:
+            self.show_notification = False
+            return
+            
+
+    # Calculate fade effect (last 500ms)
+        alpha = min(255, 255 * (1 - max(0, elapsed - (self.notification_duration - 500)) / 500))
+
+    # Create notification surface
+        notification = pygame.Surface((self.notification_rect.width, self.notification_rect.height), pygame.SRCALPHA)
+
+    # Background with rounded corners
+        pygame.draw.rect(notification, (*self.notification_color, alpha), 
+                        (0, 0, self.notification_rect.width, self.notification_rect.height),
+                        border_radius=8)
+        pygame.draw.rect(notification, (255, 255, 255, alpha),
+                        (0, 0, self.notification_rect.width, self.notification_rect.height),
+                        2, border_radius=8)
+
+    # Text (centered)
+        text = self.font.render(self.notification_text, True, (255, 255, 255, alpha))
+        text_rect = text.get_rect(center=(self.notification_rect.width//2, self.notification_rect.height//2))
+        notification.blit(text, text_rect)
+
+        screen.blit(notification, self.notification_rect)
 
 
 class MainMenu:
